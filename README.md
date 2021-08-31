@@ -1,2 +1,2 @@
 # dove
-Simple messanger made with Kotlin Multiplatform (Android + JVM Backend)
+Simple messenger made with Kotlin Multiplatform (Android + JVM Backend)
