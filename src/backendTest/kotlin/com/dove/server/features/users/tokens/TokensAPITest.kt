@@ -4,7 +4,6 @@ import com.dove.data.Constants
 import com.dove.data.monad.isSuccess
 import com.dove.data.users.tokens.TokenType
 import com.dove.mailer.LocalMailer
-import com.dove.server.features.FeaturesTest
 import com.dove.server.features.users.verifications.VerificationsAPI
 import com.dove.server.features.users.verifications.VerificationsStorage
 import com.dove.server.local.Environment
@@ -19,9 +18,14 @@ import org.junit.platform.commons.annotation.Testable
 import kotlin.random.Random
 
 @Testable
-object TokensAPITest : FeaturesTest() {
+object TokensAPITest {
 
     private lateinit var mailer: LocalMailer
+
+    @BeforeAll
+    fun initialize(): Unit = runBlocking {
+        System.setProperty("isTest", true.toString())
+    }
 
     @BeforeEach
     fun removeItems() = runBlocking {

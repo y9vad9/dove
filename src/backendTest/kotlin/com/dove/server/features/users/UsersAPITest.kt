@@ -5,7 +5,6 @@ import com.dove.data.monad.isSuccess
 import com.dove.data.monad.onError
 import com.dove.data.monad.valueOrThrow
 import com.dove.data.users.tokens.TokenType
-import com.dove.server.features.FeaturesTest
 import com.dove.server.features.users.tokens.TokensStorage
 import com.dove.server.utils.random.nextString
 import com.dove.server.utils.time.timeInMs
@@ -17,11 +16,10 @@ import org.junit.platform.commons.annotation.Testable
 import kotlin.random.Random
 
 @Testable
-object UsersAPITest : FeaturesTest() {
+object UsersAPITest {
 
     @BeforeAll
-    override fun initialize(): Unit = runBlocking {
-        super.initialize()
+    fun initialize(): Unit = runBlocking {
         System.setProperty("isTest", true.toString())
     }
 
