@@ -76,7 +76,7 @@ object TokensAPITest {
         val tokenRegular = Random.nextString(Constants.TOKEN_LENGTH)
         val regularToken = TokensStorage.create(1, tokenRegular, timeInMs, TokenType.REGULAR)
         TokensStorage.create(1, tokenOwnerString, timeInMs, TokenType.MANAGING)
-        TokensAPI.unauthorize(tokenOwnerString, regularToken.tokenId)
+        assert(TokensAPI.unauthorize(tokenOwnerString, regularToken.tokenId).isSuccess())
     }
 
     @Test
@@ -85,7 +85,7 @@ object TokensAPITest {
         val tokenRegular = Random.nextString(Constants.TOKEN_LENGTH)
         val regularToken = TokensStorage.create(1, tokenRegular, timeInMs, TokenType.REGULAR)
         TokensStorage.create(1, tokenNotOwnerString, timeInMs, TokenType.REGULAR)
-        TokensAPI.unauthorize(tokenNotOwnerString, regularToken.tokenId)
+        assert(TokensAPI.unauthorize(tokenNotOwnerString, regularToken.tokenId).isSuccess())
     }
 
 }
