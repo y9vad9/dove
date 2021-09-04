@@ -15,6 +15,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(Deps.Libs.Kotlinx.Serialization)
+                implementation(Deps.Libs.Kotlinx.Coroutines)
             }
         }
         val backendMain by getting {

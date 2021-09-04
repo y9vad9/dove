@@ -29,6 +29,22 @@ object UsersStorage {
     }
 
     /**
+     * Gets users by [ids] collection.
+     * @param ids - ids of users to get.
+     * @return [List] of [User]s.
+     */
+    suspend fun readAll(ids: Collection<Long>): List<User> {
+        val cached = mutableSetOf<User>()
+        return ids.map { id ->
+            cached.firstOrNull { it.id == id } ?: newSuspendedTransaction {
+                Users.select { Users.ID eq id }.first().toUser().also { user ->
+                    cached += user
+                }
+            }
+        }
+    }
+
+    /**
      * Gets user by [email].
      */
     suspend fun read(email: String) = newSuspendedTransaction {
@@ -56,7 +72,7 @@ object UsersStorage {
 
     /**
      * Creates user with [email].
-     * @return [Unit]
+     * @return [User]
      */
     suspend fun create(email: String): User = newSuspendedTransaction {
         Users.insert {
@@ -77,7 +93,6 @@ object UsersStorage {
 
     /**
      * Updates user with id [id].
-     * Note: [User.id] is ignored.
      */
     suspend fun update(id: Long, newFirstName: String?, newLastName: String?): Unit = newSuspendedTransaction {
         Users.update(

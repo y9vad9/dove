@@ -36,7 +36,7 @@ fun <TSuccess, TError> Either<TSuccess, TError>.valueOrThrow(): TSuccess =
 fun <TSuccess, TError> Either<TSuccess, TError>.errorOrThrow(): TError =
     errorOrNull() ?: throw NullPointerException("`error` is null")
 
-fun <TSuccess, TError> Either<TSuccess, TError>.onSuccess(block: (TSuccess) -> Unit): Either<TSuccess, TError> {
+inline fun <TSuccess, TError> Either<TSuccess, TError>.onSuccess(block: (TSuccess) -> Unit): Either<TSuccess, TError> {
     if (isSuccess())
         block(value)
     return this
@@ -48,7 +48,7 @@ fun <TSuccess, TError, RSuccess, RError> Either<TSuccess, TError>.map(
     return block(this)
 }
 
-fun <TSuccess, TError> Either<TSuccess, TError>.onError(block: (TError) -> Unit): Either<TSuccess, TError> {
+inline fun <TSuccess, TError> Either<TSuccess, TError>.onError(block: (TError) -> Unit): Either<TSuccess, TError> {
     if (!isSuccess())
         block(error)
     return this

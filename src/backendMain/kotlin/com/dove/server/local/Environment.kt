@@ -2,8 +2,8 @@ package com.dove.server.local
 
 import com.dove.mailer.LocalMailer
 import com.dove.mailer.Mailer
-import com.dove.mailer.SMTPCredentials
-import com.dove.mailer.SMTPMailer
+import java.nio.file.Path
+import kotlin.io.path.Path
 
 object Environment {
     val port: Int by lazy { System.getenv("server.port").toIntOrNull() ?: 8080 }
@@ -14,5 +14,6 @@ object Environment {
     val databaseUser: String by lazy { System.getenv("database.user") }
     val databasePassword: String by lazy { System.getenv("database.password") }
 
-    val mailer: Mailer = if(isTest) LocalMailer() else TODO()
+    val mailer: Mailer = if (isTest) LocalMailer() else TODO()
+    val files: Path by lazy { Path(System.getenv("server.uploads.path")) }
 }
