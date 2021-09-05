@@ -14,6 +14,6 @@ object Environment {
     val databaseUser: String by lazy { System.getenv("database.user") }
     val databasePassword: String by lazy { System.getenv("database.password") }
 
-    val mailer: Mailer = if (isTest) LocalMailer() else TODO()
+    val mailer: Mailer by lazy { if (isTest) LocalMailer() else TODO() }
     val files: Path by lazy { Path(System.getenv("server.uploads.path")) }
 }
