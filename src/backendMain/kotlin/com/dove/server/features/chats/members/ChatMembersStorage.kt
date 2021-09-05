@@ -39,7 +39,7 @@ object ChatMembersStorage {
      * Adds new member with [memberId] to chat with [chatId].
      * @see com.dove.server.features.chats.ChatsStorage.Chats.CHAT_ID
      */
-    suspend fun create(chatId: Long, memberId: Long): Unit = newSuspendedTransaction {
+    suspend fun create(chatId: Long, memberId: Long, memberType: MemberType): Unit = newSuspendedTransaction {
         ChatMembers.insert {
             it[CHAT_ID] = chatId
             it[MEMBER_ID] = memberId
@@ -93,6 +93,10 @@ object ChatMembersStorage {
             .limit(number, offset)
             .toList()
             .map { it.toMember().memberId }
+    }
+
+    suspend fun deleteAll() = newSuspendedTransaction {
+        ChatMembers.deleteAll()
     }
 
     private fun ResultRow.toMember(): Member = Member(get(ChatMembers.MEMBER_ID), get(ChatMembers.MEMBER_TYPE))
