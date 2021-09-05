@@ -25,6 +25,8 @@ object ChatsAPITest {
     fun deleteItems() = runBlocking {
         ChatsStorage.deleteAll()
         ChatMembersStorage.deleteAll()
+        TokensStorage.deleteAll()
+        UsersStorage.deleteAll()
     }
 
     @Test
