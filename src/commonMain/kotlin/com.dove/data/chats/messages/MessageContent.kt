@@ -10,6 +10,8 @@ sealed interface MessageContent<T> {
      */
     class PlainText(override val value: String) : MessageContent<String> {
         override val type: MessageType = MessageType.TEXT
+
+        override fun toString(): String = value
     }
 
     /**
@@ -18,6 +20,8 @@ sealed interface MessageContent<T> {
      */
     class Media(override val value: FileInfo) : MessageContent<FileInfo> {
         override val type: MessageType = MessageType.MEDIA
+
+        override fun toString(): String = value.uuid
     }
 
     /**
@@ -26,12 +30,8 @@ sealed interface MessageContent<T> {
      */
     class File(override val value: FileInfo) : MessageContent<FileInfo> {
         override val type: MessageType = MessageType.FILE
-    }
 
-    override fun toString(): String = when (this) {
-        is PlainText -> value
-        is Media -> value.uuid
-        is File -> value.uuid
+        override fun toString(): String = value.uuid
     }
 
 }
