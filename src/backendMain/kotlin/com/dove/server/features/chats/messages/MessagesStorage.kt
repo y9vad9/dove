@@ -69,7 +69,7 @@ object MessagesStorage {
             messages.filter {
                 val contentType = it[Messages.CONTENT_TYPE]
                 contentType == MessageType.MEDIA || contentType == MessageType.FILE
-            }.map { it.get(Messages.CONTENT) })
+            }.map { it[Messages.CONTENT] })
         return@newSuspendedTransaction messages.map {
             it.toMessage(users, files)
         }
