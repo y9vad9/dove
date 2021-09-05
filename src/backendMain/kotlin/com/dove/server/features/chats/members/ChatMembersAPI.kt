@@ -2,6 +2,7 @@ package com.dove.server.features.chats.members
 
 import com.dove.data.api.ApiResult
 import com.dove.data.api.errors.NoSuchPermissionError
+import com.dove.data.chats.MemberType
 import com.dove.data.monad.Either
 import com.dove.data.monad.onError
 import com.dove.data.monad.valueOrThrow
@@ -36,7 +37,7 @@ object ChatMembersAPI {
             return Either.error(it)
         }
 
-        return Either.success(ChatMembersStorage.create(chatId, userId))
+        return Either.success(ChatMembersStorage.create(chatId, userId, MemberType.REGULAR))
     }
 
     suspend fun kickMember(token: String, chatId: Long, userId: Long): ApiResult<Unit> {
