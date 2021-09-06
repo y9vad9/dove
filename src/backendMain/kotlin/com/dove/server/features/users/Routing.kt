@@ -1,19 +1,15 @@
 package com.dove.server.features.users
 
-import com.dove.data.monad.onError
-import com.dove.data.monad.onSuccess
 import com.dove.data.users.User
 import com.dove.server.features.Tags
 import com.dove.server.features.users.tokens.tokens
-import com.dove.server.utils.openapi.respondError
+import com.dove.server.utils.openapi.get
 import com.papsign.ktor.openapigen.annotations.Path
 import com.papsign.ktor.openapigen.annotations.parameters.HeaderParam
 import com.papsign.ktor.openapigen.annotations.parameters.PathParam
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
 import com.papsign.ktor.openapigen.annotations.type.number.integer.max.Max
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
-import com.papsign.ktor.openapigen.route.path.normal.get
-import com.papsign.ktor.openapigen.route.response.respond
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.tag
 
@@ -34,12 +30,8 @@ private data class UserByIdRequest(
 )
 
 private fun NormalOpenAPIRoute.getUserByIdRequest() {
-    get<UserByIdRequest, User> { parameters ->
-        UsersAPI.getById(parameters.userId).onSuccess {
-            respond(it)
-        }.onError {
-            respondError(it)
-        }
+    get<UserByIdRequest, User> {
+        UsersAPI.getById(userId)
     }
 }
 
@@ -49,12 +41,8 @@ private data class GetByEmailRequest(
 )
 
 private fun NormalOpenAPIRoute.getUserByEmailRequest() {
-    get<GetByEmailRequest, User> { parameters ->
-        UsersAPI.getByEmail(parameters.email).onSuccess {
-            respond(it)
-        }.onError {
-            respondError(it)
-        }
+    get<GetByEmailRequest, User> {
+        UsersAPI.getByEmail(email)
     }
 }
 
@@ -69,14 +57,8 @@ private data class GetUsersRequest(
 )
 
 private fun NormalOpenAPIRoute.getUsersRequest() {
-    get<GetUsersRequest, List<User>> { parameters ->
-        parameters.apply {
-            UsersAPI.getUsers(query, number, offset).onSuccess {
-                respond(it)
-            }.onError {
-                respondError(it)
-            }
-        }
+    get<GetUsersRequest, List<User>> {
+        UsersAPI.getUsers(query, number, offset)
     }
 }
 
@@ -90,13 +72,7 @@ private data class EditUserRequest(
 )
 
 private fun NormalOpenAPIRoute.editUserRequest() {
-    get<EditUserRequest, Unit> { parameters ->
-        parameters.apply {
-            UsersAPI.editProfile(token, newFirstName, newLastName).onSuccess {
-                respond(it)
-            }.onError {
-                respondError(it)
-            }
-        }
+    get<EditUserRequest, Unit> {
+        UsersAPI.editProfile(token, newFirstName, newLastName)
     }
 }
