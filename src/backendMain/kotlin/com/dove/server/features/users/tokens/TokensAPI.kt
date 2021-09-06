@@ -59,16 +59,21 @@ object TokensAPI {
         return Either.success(TokensStorage.readAll(tokenObject.userId))
     }
 
-    suspend fun unauthorize(authorizationToken: String, tokenToUnauth: Long): ApiResult<Unit> {
-        val tokenObject = TokensStorage.read(authorizationToken) ?: return Either.error(InvalidTokenError())
+    suspend fun unauthorize(token: String): ApiResult<Unit> {
+        val auth = TokensStorage.read(token) ?: Either.error(InvalidTokenError())
+        return Either.success(TokensStorage.delete(token))
+    }
 
-        if (tokenObject.type != TokenType.MANAGING)
+    suspend fun unauthorize(authorizationToken: String, tokenToUnauth: Long): ApiResult<Unit> {
+        val auth = TokensStorage.read(authorizationToken) ?: return Either.error(InvalidTokenError())
+
+        if (auth.type != TokenType.MANAGING)
             return Either.error(InvalidTokenError("Token type is invalid."))
 
         val tokenToRemove = TokensStorage.read(tokenToUnauth)
             ?: return Either.error(InvalidTokenError("Token to remove is not found."))
 
-        return if (tokenToRemove.userId == tokenObject.userId)
+        return if (tokenToRemove.userId == auth.userId)
             Either.success(TokensStorage.delete(tokenToRemove.tokenId))
         else Either.error(InvalidTokenError("Token to remove is not found."))
     }
