@@ -2,6 +2,7 @@ package com.dove.server.features.users.tokens
 
 import com.dove.data.users.tokens.Token
 import com.dove.server.features.Tags
+import com.dove.server.features.users.verifications.tokenVerifications
 import com.dove.server.utils.openapi.delete
 import com.dove.server.utils.openapi.get
 import com.papsign.ktor.openapigen.annotations.parameters.HeaderParam
@@ -15,6 +16,8 @@ fun NormalOpenAPIRoute.tokens() = tag(Tags.Tokens) {
     getTokensRequest()
     unauthorizeMe()
     unauthorize()
+
+    tokenVerifications()
 }
 
 private data class CreateTokenRequest(
