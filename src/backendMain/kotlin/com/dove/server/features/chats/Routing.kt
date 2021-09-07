@@ -2,6 +2,7 @@ package com.dove.server.features.chats
 
 import com.dove.data.chats.Chat
 import com.dove.data.chats.GroupInfo
+import com.dove.server.features.chats.members.chatMembers
 import com.dove.server.features.models.ItemsLoadingInfo
 import com.dove.server.utils.openapi.*
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
@@ -14,6 +15,8 @@ fun NormalOpenAPIRoute.chats() = route("/chats") {
     createPersonalRequest()
     editGroupRequest()
     deleteChatRequest()
+
+    chatMembers()
 }
 
 private fun NormalOpenAPIRoute.getUsersChatsRequest() = userAuthorized {

@@ -5,21 +5,14 @@ import com.dove.data.api.errors.NoSuchPermissionError
 import com.dove.data.chats.MemberType
 import com.dove.data.monad.Either
 import com.dove.data.monad.onError
-import com.dove.data.monad.valueOrThrow
 import com.dove.data.users.User
-import com.dove.data.users.tokens.Token
 import com.dove.server.features.chats.ChatHelper
 import com.dove.server.features.users.UsersStorage
-import com.dove.server.features.users.tokens.TokensHelper
 
 object ChatMembersAPI {
 
-    suspend fun getMembers(token: String, chatId: Long, numberToLoad: Int, offset: Long): ApiResult<List<User>> {
-        val auth: Token = TokensHelper.checkRegularAuthorization(token).onError {
-            return Either.error(it)
-        }.valueOrThrow()
-
-        ChatHelper.checkIsChatMember(chatId, auth.userId).onError {
+    suspend fun getMembers(user: User, chatId: Long, numberToLoad: Int, offset: Long): ApiResult<List<User>> {
+        ChatHelper.checkIsChatMember(chatId, user.id).onError {
             return Either.error(NoSuchPermissionError("you should be chat member to get members."))
         }
 
@@ -28,24 +21,16 @@ object ChatMembersAPI {
         })
     }
 
-    suspend fun addMember(token: String, chatId: Long, userId: Long): ApiResult<Unit> {
-        val auth: Token = TokensHelper.checkRegularAuthorization(token).onError {
-            return Either.error(it)
-        }.valueOrThrow()
-
-        ChatHelper.checkIsChatOwner(chatId, auth.userId).onError {
+    suspend fun addMember(user: User, chatId: Long, userId: Long): ApiResult<Unit> {
+        ChatHelper.checkIsChatOwner(chatId, user.id).onError {
             return Either.error(it)
         }
 
         return Either.success(ChatMembersStorage.create(chatId, userId, MemberType.REGULAR))
     }
 
-    suspend fun kickMember(token: String, chatId: Long, userId: Long): ApiResult<Unit> {
-        val auth: Token = TokensHelper.checkRegularAuthorization(token).onError {
-            return Either.error(it)
-        }.valueOrThrow()
-
-        ChatHelper.checkIsChatOwner(chatId, auth.userId).onError {
+    suspend fun kickMember(user: User, chatId: Long, userId: Long): ApiResult<Unit> {
+        ChatHelper.checkIsChatOwner(chatId, user.id).onError {
             return Either.error(it)
         }
 
