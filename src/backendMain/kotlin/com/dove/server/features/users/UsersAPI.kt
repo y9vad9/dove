@@ -1,12 +1,9 @@
 package com.dove.server.features.users
 
 import com.dove.data.api.ApiResult
-import com.dove.data.api.errors.InvalidTokenError
 import com.dove.data.api.errors.UserNotFoundError
 import com.dove.data.monad.Either
 import com.dove.data.users.User
-import com.dove.data.users.tokens.TokenType
-import com.dove.server.features.users.tokens.TokensStorage
 
 object UsersAPI {
 
@@ -41,16 +38,11 @@ object UsersAPI {
     }
 
     suspend fun editProfile(
-        token: String,
+        user: User,
         newFirstName: String? = null,
         newLastName: String? = null
     ): ApiResult<Unit> {
-        val auth = TokensStorage.read(token) ?: return Either.error(InvalidTokenError())
-
-        if (!(auth.type == TokenType.REGISTRATION || auth.type == TokenType.REGULAR))
-            return Either.error(InvalidTokenError())
-
-        return Either.success(UsersStorage.update(auth.userId, newFirstName, newLastName))
+        return Either.success(UsersStorage.update(user.id, newFirstName, newLastName))
     }
 
 }

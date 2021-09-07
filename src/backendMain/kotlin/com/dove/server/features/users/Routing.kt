@@ -4,8 +4,9 @@ import com.dove.data.users.User
 import com.dove.server.features.Tags
 import com.dove.server.features.users.tokens.tokens
 import com.dove.server.utils.openapi.get
+import com.dove.server.utils.openapi.user
+import com.dove.server.utils.openapi.userAuthorized
 import com.papsign.ktor.openapigen.annotations.Path
-import com.papsign.ktor.openapigen.annotations.parameters.HeaderParam
 import com.papsign.ktor.openapigen.annotations.parameters.PathParam
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
 import com.papsign.ktor.openapigen.annotations.type.number.integer.max.Max
@@ -63,16 +64,14 @@ private fun NormalOpenAPIRoute.getUsersRequest() {
 }
 
 private data class EditUserRequest(
-    @HeaderParam("token")
-    val token: String,
     @QueryParam("New First name")
     val newFirstName: String? = null,
     @QueryParam("New last name")
     val newLastName: String? = null
 )
 
-private fun NormalOpenAPIRoute.editUserRequest() {
+private fun NormalOpenAPIRoute.editUserRequest() = userAuthorized {
     get<EditUserRequest, Unit> {
-        UsersAPI.editProfile(token, newFirstName, newLastName)
+        UsersAPI.editProfile(user, newFirstName, newLastName)
     }
 }

@@ -5,8 +5,8 @@ import com.dove.data.api.ApiResult
 import com.dove.data.api.errors.InternalApiError
 import com.dove.data.api.errors.InvalidTokenError
 import com.dove.data.monad.Either
+import com.dove.data.users.User
 import com.dove.data.users.tokens.Token
-import com.dove.data.users.tokens.TokenType
 import com.dove.data.users.verifications.VerificationType
 import com.dove.mailer.Email
 import com.dove.server.features.users.UsersStorage
@@ -50,13 +50,8 @@ object TokensAPI {
             ?: Either.error(InvalidTokenError())
     }
 
-    suspend fun getTokens(token: String): ApiResult<List<Token>> {
-        val tokenObject = TokensStorage.read(token) ?: return Either.error(InvalidTokenError())
-
-        if (tokenObject.type != TokenType.MANAGING)
-            return Either.error(InvalidTokenError("Token type is invalid."))
-
-        return Either.success(TokensStorage.readAll(tokenObject.userId))
+    suspend fun getTokens(user: User): ApiResult<List<Token>> {
+        return Either.success(TokensStorage.readAll(user.id))
     }
 
     suspend fun unauthorize(token: String): ApiResult<Unit> {
@@ -64,16 +59,11 @@ object TokensAPI {
         return Either.success(TokensStorage.delete(token))
     }
 
-    suspend fun unauthorize(authorizationToken: String, tokenToUnauth: Long): ApiResult<Unit> {
-        val auth = TokensStorage.read(authorizationToken) ?: return Either.error(InvalidTokenError())
-
-        if (auth.type != TokenType.MANAGING)
-            return Either.error(InvalidTokenError("Token type is invalid."))
-
+    suspend fun unauthorize(user: User, tokenToUnauth: Long): ApiResult<Unit> {
         val tokenToRemove = TokensStorage.read(tokenToUnauth)
             ?: return Either.error(InvalidTokenError("Token to remove is not found."))
 
-        return if (tokenToRemove.userId == auth.userId)
+        return if (tokenToRemove.userId == user.id)
             Either.success(TokensStorage.delete(tokenToRemove.tokenId))
         else Either.error(InvalidTokenError("Token to remove is not found."))
     }
