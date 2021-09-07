@@ -1,5 +1,6 @@
 package com.dove.server.features.users
 
+import com.dove.data.Constants
 import com.dove.data.users.User
 import com.dove.server.features.Tags
 import com.dove.server.features.users.tokens.tokens
@@ -10,6 +11,8 @@ import com.papsign.ktor.openapigen.annotations.Path
 import com.papsign.ktor.openapigen.annotations.parameters.PathParam
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
 import com.papsign.ktor.openapigen.annotations.type.number.integer.max.Max
+import com.papsign.ktor.openapigen.annotations.type.string.length.MaxLength
+import com.papsign.ktor.openapigen.annotations.type.string.length.MinLength
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.tag
@@ -38,6 +41,7 @@ private fun NormalOpenAPIRoute.getUserByIdRequest() {
 
 private data class GetByEmailRequest(
     @QueryParam("User email")
+    @MaxLength(Constants.EMAIL_MAX_LEN)
     val email: String
 )
 
@@ -64,8 +68,11 @@ private fun NormalOpenAPIRoute.getUsersRequest() {
 }
 
 private data class EditUserRequest(
+    @MinLength(Constants.FIRST_NAME_MIN)
+    @MaxLength(Constants.FIRST_NAME_MAX_LEN)
     @QueryParam("New First name")
     val newFirstName: String? = null,
+    @MaxLength(Constants.LAST_NAME_MAX_LEN)
     @QueryParam("New last name")
     val newLastName: String? = null
 )
