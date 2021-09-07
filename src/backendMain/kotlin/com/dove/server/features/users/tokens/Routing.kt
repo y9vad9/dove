@@ -5,6 +5,8 @@ import com.dove.server.features.Tags
 import com.dove.server.features.users.verifications.tokenVerifications
 import com.dove.server.utils.openapi.delete
 import com.dove.server.utils.openapi.get
+import com.dove.server.utils.openapi.user
+import com.dove.server.utils.openapi.userAuthorized
 import com.papsign.ktor.openapigen.annotations.parameters.HeaderParam
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
@@ -40,8 +42,10 @@ private fun NormalOpenAPIRoute.getTokenRequest() = get<AuthorizeByTokenRequest, 
     TokensAPI.getToken(token)
 }
 
-private fun NormalOpenAPIRoute.getTokensRequest() = get<AuthorizeByTokenRequest, List<Token>> {
-    TokensAPI.getTokens(token)
+private fun NormalOpenAPIRoute.getTokensRequest() = userAuthorized {
+    get<AuthorizeByTokenRequest, List<Token>> {
+        TokensAPI.getTokens(user)
+    }
 }
 
 private fun NormalOpenAPIRoute.unauthorizeMe() = delete<AuthorizeByTokenRequest, Unit> {
@@ -55,8 +59,10 @@ private data class UnauthorizeRequest(
     val unauthTokenId: Long
 )
 
-private fun NormalOpenAPIRoute.unauthorize() = delete<UnauthorizeRequest, Unit> {
-    TokensAPI.unauthorize(token, unauthTokenId)
+private fun NormalOpenAPIRoute.unauthorize() = userAuthorized {
+    delete<UnauthorizeRequest, Unit> {
+        TokensAPI.unauthorize(user, unauthTokenId)
+    }
 }
 
 
