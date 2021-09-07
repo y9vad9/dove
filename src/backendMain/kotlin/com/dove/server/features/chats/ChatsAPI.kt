@@ -9,62 +9,44 @@ import com.dove.data.chats.MemberType
 import com.dove.data.monad.Either
 import com.dove.data.monad.isSuccess
 import com.dove.data.monad.onError
-import com.dove.data.monad.valueOrThrow
+import com.dove.data.users.User
 import com.dove.server.features.chats.members.ChatMembersStorage
-import com.dove.server.features.users.tokens.TokensHelper
 
 object ChatsAPI {
     /**
      * Gets [number] user chats with [offset].
      */
-    suspend fun getUserChats(token: String, number: Int, offset: Long): ApiResult<List<Chat>> {
-        val auth = TokensHelper.checkRegularAuthorization(token).onError {
-            return Either.error(it)
-        }.valueOrThrow()
-        return Either.success(ChatsStorage.readAll(auth.userId, number, offset))
+    suspend fun getUserChats(user: User, number: Int, offset: Long): ApiResult<List<Chat>> {
+        return Either.success(ChatsStorage.readAll(user.id, number, offset))
     }
 
-    suspend fun createGroup(token: String, name: String): ApiResult<Chat.Group> {
-        val auth = TokensHelper.checkRegularAuthorization(token).onError {
-            return Either.error(it)
-        }.valueOrThrow()
+    suspend fun createGroup(user: User, name: String): ApiResult<Chat.Group> {
         val chatId = ChatsStorage.create(name, null, ChatType.GROUP)
-        ChatMembersStorage.create(chatId, auth.userId, MemberType.OWNER)
-        return Either.success(ChatsStorage.read(chatId, auth.userId) as Chat.Group)
+        ChatMembersStorage.create(chatId, user.id, MemberType.OWNER)
+        return Either.success(ChatsStorage.read(chatId, user.id) as Chat.Group)
     }
 
-    suspend fun createPersonalChat(token: String, userId: Long): ApiResult<Chat.Personal> {
-        val auth = TokensHelper.checkRegularAuthorization(token).onError {
-            return Either.error(it)
-        }.valueOrThrow()
+    suspend fun createPersonalChat(user: User, anotherUserId: Long): ApiResult<Chat.Personal> {
         val chatId = ChatsStorage.create(null, null, ChatType.PERSONAL)
-        ChatMembersStorage.create(chatId, auth.userId, MemberType.OWNER)
-        ChatMembersStorage.create(chatId, userId, MemberType.OWNER)
-        return Either.success(ChatsStorage.read(chatId, auth.userId) as Chat.Personal)
+        ChatMembersStorage.create(chatId, user.id, MemberType.OWNER)
+        ChatMembersStorage.create(chatId, anotherUserId, MemberType.OWNER)
+        return Either.success(ChatsStorage.read(chatId, user.id) as Chat.Personal)
     }
 
-    suspend fun updateGroupInfo(token: String, chatId: Long, groupInfo: GroupInfo): ApiResult<Unit> {
-        val auth = TokensHelper.checkRegularAuthorization(token).onError {
-            return Either.error(it)
-        }.valueOrThrow()
-
-        val group = ChatsStorage.read(chatId, auth.userId)
+    suspend fun updateGroupInfo(user: User, chatId: Long, groupInfo: GroupInfo): ApiResult<Unit> {
+        val group = ChatsStorage.read(chatId, user.id)
             ?.takeIf { it.type == ChatType.GROUP }
             ?: return Either.error(ChatNotFoundError)
 
-        ChatHelper.checkIsChatOwner(chatId, auth.userId).onError {
+        ChatHelper.checkIsChatOwner(chatId, user.id).onError {
             return Either.error(it)
         }
 
         return Either.success(ChatsStorage.update(chatId, groupInfo.name, groupInfo.image))
     }
 
-    suspend fun deleteChat(token: String, chatId: Long): ApiResult<Unit> {
-        val auth = TokensHelper.checkRegularAuthorization(token).onError {
-            return Either.error(it)
-        }.valueOrThrow()
-
-        val check = ChatHelper.checkIsChatOwner(chatId, auth.userId)
+    suspend fun deleteChat(user: User, chatId: Long): ApiResult<Unit> {
+        val check = ChatHelper.checkIsChatOwner(chatId, user.id)
 
         return if (check.isSuccess())
             Either.success(ChatsStorage.delete(chatId))
