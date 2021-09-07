@@ -6,6 +6,7 @@ import com.dove.data.chats.ChatType
 import com.dove.data.chats.MemberType
 import com.dove.data.monad.isSuccess
 import com.dove.data.monad.valueOrThrow
+import com.dove.data.users.User
 import com.dove.data.users.tokens.TokenType
 import com.dove.server.features.chats.ChatsStorage
 import com.dove.server.features.users.UsersStorage
@@ -23,9 +24,10 @@ import kotlin.random.Random
 @Testable
 object ChatMembersAPITest {
 
-    private var userId by Delegates.notNull<Long>()
-    private const val chatName: String = "Chat"
+    private val userId get() = user.id
     private val token by lazy { Random.nextString(Constants.TOKEN_LENGTH) }
+    private const val chatName: String = "Chat"
+    private var user by Delegates.notNull<User>()
 
     @BeforeEach
     fun deleteItems() = runBlocking {
@@ -35,7 +37,7 @@ object ChatMembersAPITest {
 
     @BeforeAll
     fun createUser() = runBlocking {
-        userId = UsersStorage.create("test@email.com").id
+        user = UsersStorage.create("test@email.com")
     }
 
     private fun createChat(): Chat = runBlocking {
@@ -49,7 +51,7 @@ object ChatMembersAPITest {
     @Test
     fun getMembers() = runBlocking {
         val chat = createChat()
-        val membersResult = ChatMembersAPI.getMembers(token, chat.chatId, 20, 0)
+        val membersResult = ChatMembersAPI.getMembers(user, chat.chatId, 20, 0)
         assert(membersResult.isSuccess())
         assert(membersResult.valueOrThrow().isNotEmpty())
     }
@@ -57,14 +59,14 @@ object ChatMembersAPITest {
     @Test
     fun addMember() = runBlocking {
         val chat = createChat()
-        assert(ChatMembersAPI.addMember(token, chat.chatId, 2).isSuccess())
+        assert(ChatMembersAPI.addMember(user, chat.chatId, 2).isSuccess())
     }
 
     @Test
     fun kickMember() = runBlocking {
         val chat = createChat()
-        ChatMembersAPI.addMember(token, chat.chatId, 2)
-        assert(ChatMembersAPI.kickMember(token, chat.chatId, 2).isSuccess())
+        ChatMembersAPI.addMember(user, chat.chatId, 2)
+        assert(ChatMembersAPI.kickMember(user, chat.chatId, 2).isSuccess())
     }
 
 }

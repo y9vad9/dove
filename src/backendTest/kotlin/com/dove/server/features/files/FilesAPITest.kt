@@ -2,6 +2,7 @@ package com.dove.server.features.files
 
 import com.dove.data.Constants
 import com.dove.data.monad.isSuccess
+import com.dove.data.users.User
 import com.dove.data.users.tokens.TokenType
 import com.dove.server.features.users.tokens.TokensStorage
 import com.dove.server.utils.hashing.toMD5
@@ -11,6 +12,8 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.platform.commons.annotation.Testable
+import java.io.File
+import java.io.FileInputStream
 import java.util.*
 import kotlin.random.Random
 
@@ -19,6 +22,14 @@ object FilesAPITest {
     private const val userId: Long = 1
     private const val realFileName = "read-file-name.ext"
     private val fileBytes: ByteArray = "test".toByteArray()
+    private val user = User(0, "", "", "")
+
+    private val inputStream
+        get() = FileInputStream(File.createTempFile("test", "png").apply {
+            createNewFile()
+            writeBytes(fileBytes)
+        })
+
 
     @BeforeEach
     fun beforeEach() = runBlocking {
@@ -30,14 +41,21 @@ object FilesAPITest {
     fun `upload test by invalid token`() = runBlocking {
         val token = Random.nextString(Constants.TOKEN_LENGTH)
         TokensStorage.create(userId, token, timeInMs, TokenType.REGISTRATION)
-        assert(!FilesAPI.upload(token, realFileName, fileBytes).isSuccess())
+        assert(
+            !FilesAPI.upload(
+                user,
+                realFileName,
+                inputStream
+            )
+                .isSuccess()
+        )
     }
 
     @Test
     fun `upload test by valid token`() = runBlocking {
         val token = Random.nextString(Constants.TOKEN_LENGTH)
         TokensStorage.create(userId, token, timeInMs, TokenType.REGULAR)
-        assert(FilesAPI.upload(token, realFileName, fileBytes).isSuccess())
+        assert(FilesAPI.upload(user, realFileName, inputStream).isSuccess())
     }
 
     @Test

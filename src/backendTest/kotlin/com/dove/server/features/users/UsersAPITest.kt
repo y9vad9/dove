@@ -9,7 +9,6 @@ import com.dove.server.features.users.tokens.TokensStorage
 import com.dove.server.utils.random.nextString
 import com.dove.server.utils.time.timeInMs
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.platform.commons.annotation.Testable
@@ -17,11 +16,6 @@ import kotlin.random.Random
 
 @Testable
 object UsersAPITest {
-
-    @BeforeAll
-    fun initialize(): Unit = runBlocking {
-        System.setProperty("isTest", true.toString())
-    }
 
     @BeforeEach
     fun removeItems() = runBlocking {
@@ -62,7 +56,7 @@ object UsersAPITest {
         val token = Random.nextString(Constants.TOKEN_LENGTH)
         val user = UsersStorage.create(email)
         TokensStorage.create(user.id, token, timeInMs, TokenType.REGISTRATION)
-        assert(UsersAPI.editProfile(token, "Test", "Nothing").isSuccess())
+        assert(UsersAPI.editProfile(user, "Test", "Nothing").isSuccess())
         assert(UsersStorage.read(email)!!.firstName == "Test")
     }
 }

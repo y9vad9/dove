@@ -8,6 +8,7 @@ import com.dove.data.chats.messages.MessageContent
 import com.dove.data.chats.messages.MessageType
 import com.dove.data.monad.isSuccess
 import com.dove.data.monad.valueOrThrow
+import com.dove.data.users.User
 import com.dove.data.users.tokens.TokenType
 import com.dove.server.features.chats.ChatsStorage
 import com.dove.server.features.chats.members.ChatMembersStorage
@@ -26,9 +27,10 @@ import kotlin.random.Random
 @Testable
 object MessagesAPITest {
 
-    private var userId by Delegates.notNull<Long>()
-    private const val chatName: String = "Chat"
+    private val userId get() = user.id
     private val token by lazy { Random.nextString(Constants.TOKEN_LENGTH) }
+    private const val chatName: String = "Chat"
+    private var user by Delegates.notNull<User>()
 
     @BeforeEach
     fun deleteItems() = runBlocking {
@@ -39,7 +41,7 @@ object MessagesAPITest {
 
     @BeforeAll
     fun createUser() = runBlocking {
-        userId = UsersStorage.create("test@email.com").id
+        user = UsersStorage.create("test@email.com")
     }
 
     private fun createChat(): Chat = runBlocking {
@@ -54,7 +56,7 @@ object MessagesAPITest {
     @Test
     fun getMessages() = runBlocking {
         val chat = createChat()
-        val result = MessagesAPI.getMessages(token, chat.chatId, 20, 0)
+        val result = MessagesAPI.getMessages(user, chat.chatId, 20, 0)
         assert(result.isSuccess())
         assert(result.valueOrThrow().isNotEmpty())
     }
@@ -62,14 +64,14 @@ object MessagesAPITest {
     @Test
     fun sendMessage() = runBlocking {
         val chat = createChat()
-        assert(MessagesAPI.sendMessage(token, chat.chatId, MessageContent.PlainText("test")).isSuccess())
+        assert(MessagesAPI.sendMessage(user, chat.chatId, MessageContent.PlainText("test")).isSuccess())
     }
 
     @Test
     fun deleteMessage() = runBlocking {
         val chat = createChat()
         val message = MessagesStorage.readAll(chat.chatId, 20, 0).first()
-        assert(MessagesAPI.deleteMessage(token, chat.chatId, message.messageId).isSuccess())
+        assert(MessagesAPI.deleteMessage(user, chat.chatId, message.messageId).isSuccess())
     }
 
 }

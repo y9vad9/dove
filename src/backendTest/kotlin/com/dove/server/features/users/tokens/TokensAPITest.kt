@@ -2,8 +2,10 @@ package com.dove.server.features.users.tokens
 
 import com.dove.data.Constants
 import com.dove.data.monad.isSuccess
+import com.dove.data.users.User
 import com.dove.data.users.tokens.TokenType
 import com.dove.mailer.LocalMailer
+import com.dove.server.features.users.UsersStorage
 import com.dove.server.features.users.verifications.VerificationsAPI
 import com.dove.server.features.users.verifications.VerificationsStorage
 import com.dove.server.local.Environment
@@ -15,22 +17,25 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.platform.commons.annotation.Testable
+import kotlin.properties.Delegates
 import kotlin.random.Random
 
 @Testable
 object TokensAPITest {
 
     private lateinit var mailer: LocalMailer
-
-    @BeforeAll
-    fun initialize(): Unit = runBlocking {
-        System.setProperty("isTest", true.toString())
-    }
+    private val userId get() = user.id
+    private var user by Delegates.notNull<User>()
 
     @BeforeEach
     fun removeItems() = runBlocking {
         TokensStorage.deleteAll()
         VerificationsStorage.deleteAll()
+    }
+
+    @BeforeAll
+    private fun createUser() = runBlocking {
+        user = UsersStorage.create("test@mail.net")
     }
 
     @BeforeAll
@@ -60,14 +65,14 @@ object TokensAPITest {
     fun `get tokens by invalid token type`() = runBlocking {
         val token = Random.nextString(Constants.TOKEN_LENGTH)
         TokensStorage.create(1, token, timeInMs, TokenType.REGISTRATION)
-        assert(!TokensAPI.getTokens(token).isSuccess())
+        assert(!TokensAPI.getTokens(user).isSuccess())
     }
 
     @Test
     fun `get tokens by valid token type`() = runBlocking {
         val token = Random.nextString(Constants.TOKEN_LENGTH)
-        TokensStorage.create(1, token, timeInMs, TokenType.MANAGING)
-        assert(TokensAPI.getTokens(token).isSuccess())
+        TokensStorage.create(1, token, timeInMs, TokenType.REGULAR)
+        assert(TokensAPI.getTokens(user).isSuccess())
     }
 
     @Test
@@ -75,8 +80,8 @@ object TokensAPITest {
         val tokenOwnerString = Random.nextString(Constants.TOKEN_LENGTH)
         val tokenRegular = Random.nextString(Constants.TOKEN_LENGTH)
         val regularToken = TokensStorage.create(1, tokenRegular, timeInMs, TokenType.REGULAR)
-        TokensStorage.create(1, tokenOwnerString, timeInMs, TokenType.MANAGING)
-        assert(TokensAPI.unauthorize(tokenOwnerString, regularToken.tokenId).isSuccess())
+        TokensStorage.create(user.id, tokenOwnerString, timeInMs, TokenType.REGULAR)
+        assert(TokensAPI.unauthorize(user, regularToken.tokenId).isSuccess())
     }
 
     @Test
@@ -84,8 +89,7 @@ object TokensAPITest {
         val tokenNotOwnerString = Random.nextString(Constants.TOKEN_LENGTH)
         val tokenRegular = Random.nextString(Constants.TOKEN_LENGTH)
         val regularToken = TokensStorage.create(1, tokenRegular, timeInMs, TokenType.REGULAR)
-        TokensStorage.create(1, tokenNotOwnerString, timeInMs, TokenType.REGULAR)
-        assert(TokensAPI.unauthorize(tokenNotOwnerString, regularToken.tokenId).isSuccess())
+        assert(TokensAPI.unauthorize(user, regularToken.tokenId).isSuccess())
     }
 
 }
