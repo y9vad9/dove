@@ -16,4 +16,7 @@ object Environment {
 
     val mailer: Mailer by lazy { if (isTest) LocalMailer() else TODO() }
     val files: Path by lazy { Path(System.getenv("server.uploads.path")) }
+
+    val socketAddress: String by lazy { System.getenv("server.socket.address") }
+
 }

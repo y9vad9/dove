@@ -27,6 +27,7 @@ object Deps {
 
     object Modules {
         const val Mailer = ":mailer"
+        const val JsonRpc = ":jsonrpc"
     }
 
     object Libs {
@@ -56,6 +57,8 @@ object Deps {
                 const val Cio = "io.ktor:ktor-server-cio:$ktorVersion"
                 const val Serialization = "io.ktor:ktor-serialization:$ktorVersion"
                 const val Openapi = "com.github.papsign:Ktor-OpenAPI-Generator:$ktorOpenapiVersion"
+                const val Sockets = "io.ktor:ktor-network:$ktorVersion"
+                const val WebSockets = "io.ktor:ktor-websockets:$ktorVersion"
             }
         }
 

@@ -24,3 +24,4 @@ dependencyResolutionManagement {
 }
 
 include("mailer")
+include("jsonrpc")

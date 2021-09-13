@@ -28,7 +28,8 @@ kotlin {
                 implementation(Deps.Libs.Ktor.Server.Openapi)
                 implementation(Deps.Libs.Ktor.Server.Serialization)
                 implementation(project(Deps.Modules.Mailer))
-                implementation(Deps.Libs.Guava)
+                implementation(project(Deps.Modules.JsonRpc))
+                implementation(Deps.Libs.Ktor.Server.WebSockets)
             }
         }
         val backendTest by getting {
