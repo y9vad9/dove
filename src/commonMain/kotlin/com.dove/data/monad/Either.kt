@@ -1,6 +1,7 @@
 package com.dove.data.monad
 
 import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 sealed interface Either<out TSuccess, out TError> {
@@ -36,19 +37,31 @@ fun <TSuccess, TError> Either<TSuccess, TError>.valueOrThrow(): TSuccess =
 fun <TSuccess, TError> Either<TSuccess, TError>.errorOrThrow(): TError =
     errorOrNull() ?: throw NullPointerException("`error` is null")
 
+@OptIn(ExperimentalContracts::class)
 inline fun <TSuccess, TError> Either<TSuccess, TError>.onSuccess(block: (TSuccess) -> Unit): Either<TSuccess, TError> {
+    contract {
+        callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+    }
     if (isSuccess())
         block(value)
     return this
 }
 
+@OptIn(ExperimentalContracts::class)
 fun <TSuccess, TError, RSuccess, RError> Either<TSuccess, TError>.map(
     block: (Either<TSuccess, TError>) -> Either<RSuccess, RError>
 ): Either<RSuccess, RError> {
+    contract {
+        callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+    }
     return block(this)
 }
 
+@OptIn(ExperimentalContracts::class)
 inline fun <TSuccess, TError> Either<TSuccess, TError>.onError(block: (TError) -> Unit): Either<TSuccess, TError> {
+    contract {
+        callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+    }
     if (!isSuccess())
         block(error)
     return this
