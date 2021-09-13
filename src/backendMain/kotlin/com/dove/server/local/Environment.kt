@@ -6,17 +6,16 @@ import java.nio.file.Path
 import kotlin.io.path.Path
 
 object Environment {
-    val port: Int by lazy { System.getenv("server.port").toIntOrNull() ?: 8080 }
-    val debug: Boolean by lazy { System.getenv("server.debug").toBooleanStrictOrNull() ?: true }
-    val isTest: Boolean by lazy { System.getenv("server.isTest").toBooleanStrictOrNull() ?: false }
+    val port: Int by lazy { System.getenv("SERVER_PORT").toIntOrNull() ?: 8080 }
+    val debug: Boolean by lazy { System.getenv("SERVER_IS_DEBUG").toBooleanStrictOrNull() ?: true }
+    private val isTest: Boolean by lazy { System.getenv("SERVER_IS_TEST").toBooleanStrictOrNull() ?: false }
 
-    val databaseUrl: String by lazy { System.getenv("database.url") }
-    val databaseUser: String by lazy { System.getenv("database.user") }
-    val databasePassword: String by lazy { System.getenv("database.password") }
+    val databaseUrl: String by lazy { System.getenv("POSTGRES_URL") }
+    val databaseUser: String by lazy { System.getenv("POSTGRES_USER") }
+    val databasePassword: String by lazy { System.getenv("POSTGRES_PASSWORD") }
 
     val mailer: Mailer by lazy { if (isTest) LocalMailer() else TODO() }
-    val files: Path by lazy { Path(System.getenv("server.uploads.path")) }
+    val files: Path by lazy { Path(System.getenv("SERVER_UPLOAD_PATH")) }
 
-    val socketAddress: String by lazy { System.getenv("server.socket.address") }
-
+    val socketAddress: String by lazy { System.getenv("SERVER_SOCKET_ADDRESS") }
 }
