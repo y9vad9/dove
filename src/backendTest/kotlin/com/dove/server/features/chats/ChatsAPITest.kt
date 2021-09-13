@@ -18,11 +18,13 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.junit.platform.commons.annotation.Testable
 import kotlin.properties.Delegates
 import kotlin.random.Random
 
 @Testable
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 object ChatsAPITest {
 
     private val userId get() = user.id
@@ -39,6 +41,7 @@ object ChatsAPITest {
     }
 
     @BeforeAll
+    @JvmStatic
     fun createUser() = runBlocking {
         user = UsersStorage.create("test@email.com")
     }
