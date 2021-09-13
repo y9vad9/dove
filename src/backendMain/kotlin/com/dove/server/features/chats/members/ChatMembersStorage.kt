@@ -95,7 +95,7 @@ object ChatMembersStorage {
             .map { it.toMember().memberId }
     }
 
-    suspend fun deleteAll() = newSuspendedTransaction {
+    suspend fun deleteAll(): Unit = newSuspendedTransaction {
         ChatMembers.deleteAll()
     }
 
