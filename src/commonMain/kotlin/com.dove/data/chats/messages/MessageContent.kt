@@ -1,5 +1,7 @@
 package com.dove.data.chats.messages
 
+import com.dove.data.files.FileInfo
+
 sealed interface MessageContent<T> {
     val value: T
     val type: MessageType

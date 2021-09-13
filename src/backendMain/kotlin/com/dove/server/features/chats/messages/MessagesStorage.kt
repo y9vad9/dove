@@ -1,10 +1,10 @@
 package com.dove.server.features.chats.messages
 
 import com.dove.data.Constants
-import com.dove.data.chats.messages.FileInfo
 import com.dove.data.chats.messages.Message
 import com.dove.data.chats.messages.MessageContent
 import com.dove.data.chats.messages.MessageType
+import com.dove.data.files.FileInfo
 import com.dove.data.users.User
 import com.dove.server.di.DatabaseDI
 import com.dove.server.features.files.FilesStorage

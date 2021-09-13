@@ -1,7 +1,7 @@
 package com.dove.server.features.files
 
 import com.dove.data.Constants
-import com.dove.data.chats.messages.FileInfo
+import com.dove.data.files.FileInfo
 import com.dove.server.di.DatabaseDI
 import com.dove.server.utils.time.timeInMs
 import org.jetbrains.annotations.TestOnly

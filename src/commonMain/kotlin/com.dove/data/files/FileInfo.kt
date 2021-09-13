@@ -1,4 +1,4 @@
-package com.dove.data.chats.messages
+package com.dove.data.files
 
 data class FileInfo(
     val uuid: String,
