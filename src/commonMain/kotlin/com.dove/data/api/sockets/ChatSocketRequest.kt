@@ -16,15 +16,11 @@ sealed interface ChatSocketRequest : SocketRequest {
      * Used for subscribing to chat changes.
      */
     @SerialName("Subscribe")
-    class Subscribe(val chatsIds: Set<Long>, override val token: String) : ChatSocketRequest {
-        override val type: SocketRequestType = SocketRequestType.SUBSCRIBE
-    }
+    class Subscribe(val chatsIds: Set<Long>, override val token: String) : ChatSocketRequest
 
     /**
      * Used for unsubscribing from some chat changes.
      */
     @SerialName("Unsubscribe")
-    class Unsubscribe(val chatsIds: Set<Long>, override val token: String) : ChatSocketRequest {
-        override val type: SocketRequestType = SocketRequestType.UNSUBSCRIBE
-    }
+    class Unsubscribe(val chatsIds: Set<Long>, override val token: String) : ChatSocketRequest
 }
