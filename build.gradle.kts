@@ -18,6 +18,7 @@ kotlin {
                 implementation(Deps.Libs.Kotlinx.Coroutines)
             }
         }
+
         val backendMain by getting {
             dependencies {
                 implementation(Deps.Libs.Exposed.Core)
@@ -39,6 +40,10 @@ kotlin {
             }
         }
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 android {

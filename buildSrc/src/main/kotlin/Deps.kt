@@ -35,7 +35,7 @@ object Deps {
             const val CommonMail = "org.apache.commons:commons-email:1.5"
         }
 
-        const val JUnit = "org.junit.jupiter:junit-jupiter-api:5.7.2"
+        const val JUnit = "org.jetbrains.kotlin:kotlin-test-junit5:1.5.30"
         const val Guava = "com.google.guava:guava:30.1.1-jre"
 
         object Kotlinx {
