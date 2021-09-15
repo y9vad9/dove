@@ -2,6 +2,7 @@ package com.dove.server.features.chats.members.storage
 
 import com.dove.data.chats.Member
 import com.dove.data.chats.MemberType
+import com.dove.extensions.limit
 
 class MockedChatMembersStorage : ChatMembersStorage {
     private val chatMembers: MutableMap<Long, List<Member>> = mutableMapOf()
@@ -15,7 +16,7 @@ class MockedChatMembersStorage : ChatMembersStorage {
     }
 
     override suspend fun readAll(chatId: Long, number: Int, offset: Long): List<Member> {
-        return chatMembers[chatId]?.subList(offset.toInt(), offset.toInt() + number) ?: error("No such chat.")
+        return chatMembers[chatId]?.limit(offset.toInt()..offset.toInt() + number) ?: error("No such chat.")
     }
 
     override suspend fun readOwner(chatId: Long): Member {
@@ -30,8 +31,7 @@ class MockedChatMembersStorage : ChatMembersStorage {
     override suspend fun chatIdsUserExistIn(memberId: Long, number: Int, offset: Long): List<Long> {
         return chatMembers
             .filter { memberId in it.value.map(Member::memberId) }
-            .flatMap { it.value }
-            .map { it.memberId }
+            .map { it.key }
     }
 
     override suspend fun deleteAll() {

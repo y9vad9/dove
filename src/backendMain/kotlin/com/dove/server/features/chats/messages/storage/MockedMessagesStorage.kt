@@ -3,6 +3,7 @@ package com.dove.server.features.chats.messages.storage
 import com.dove.data.chats.messages.Message
 import com.dove.data.chats.messages.MessageContent
 import com.dove.data.users.User
+import com.dove.extensions.limit
 import com.dove.server.utils.time.timeInMs
 import kotlin.random.Random
 
@@ -20,7 +21,7 @@ class MockedMessagesStorage : MessagesStorage {
     }
 
     override suspend fun readAll(chatId: Long, number: Int, offset: Long): List<Message> {
-        return (messages[chatId] ?: return emptyList()).subList(offset.toInt(), offset.toInt() + number)
+        return (messages[chatId] ?: return emptyList()).limit(offset.toInt()..offset.toInt() + number)
     }
 
     override suspend fun read(messageId: Long): Message? {

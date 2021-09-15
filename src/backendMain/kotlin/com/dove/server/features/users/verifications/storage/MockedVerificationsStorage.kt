@@ -11,7 +11,7 @@ class MockedVerificationsStorage : VerificationsStorage {
     }
 
     override suspend fun read(email: String, code: String, type: VerificationType?): Verification? {
-        return verifications.firstOrNull { it.email == email && it.code == code && it.type == type }
+        return verifications.firstOrNull { it.email == email && it.code == code && if (type != null) it.type == type else true }
     }
 
     override suspend fun delete(email: String, code: String, type: VerificationType) {

@@ -29,7 +29,7 @@ class FilesAPI(private val filesInfoStorage: FilesInfoStorage, private val files
     suspend fun getFileBytes(fileUUID: String): ApiResult<InputStream> {
         val file = filesInfoStorage.read(UUID.fromString(fileUUID)) ?: return Either.error(FileNotFoundError)
         return Either.success(withContext(Dispatchers.IO) {
-            filesStorage.read(file.fileHash)
+            filesStorage.read(file.fileHash)!!
         })
     }
 }

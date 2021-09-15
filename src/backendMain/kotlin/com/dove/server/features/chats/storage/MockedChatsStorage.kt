@@ -18,7 +18,7 @@ class MockedChatsStorage(private val membersStorage: ChatMembersStorage, private
     private val chats: MutableList<ChatModel> = mutableListOf()
 
     override suspend fun create(chatName: String?, chatImage: String?, chatType: ChatType): Long {
-        val chatId = Random.nextLong()
+        val chatId = Random.nextLong(1000)
         chats += ChatModel(chatId, chatName, chatImage, chatType)
         return chatId
     }
@@ -33,8 +33,8 @@ class MockedChatsStorage(private val membersStorage: ChatMembersStorage, private
     }
 
     override suspend fun readAll(userId: Long, number: Int, offset: Long): List<Chat> {
-        return membersStorage.chatIdsUserExistIn(userId, number, offset).map {
-            read(it, userId)!!
+        return membersStorage.chatIdsUserExistIn(userId, number, offset).map { chatId ->
+            read(chatId, userId) ?: error("Error while converting chat with id $chatId for user with id $userId")
         }
     }
 
@@ -58,7 +58,7 @@ class MockedChatsStorage(private val membersStorage: ChatMembersStorage, private
         )
         ChatType.PERSONAL -> Chat.Personal(
             chatId,
-            usersStorage.read(membersStorage.readAll(chatId, 1, 0).single { it.memberId != userId }.memberId)!!
+            usersStorage.read(membersStorage.readAll(chatId, 20, 0).single { it.memberId != userId }.memberId)!!
         )
     }
 }

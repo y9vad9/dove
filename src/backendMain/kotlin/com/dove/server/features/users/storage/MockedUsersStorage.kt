@@ -1,6 +1,7 @@
 package com.dove.server.features.users.storage
 
 import com.dove.data.users.User
+import com.dove.extensions.limit
 
 class MockedUsersStorage : UsersStorage {
     private val users: MutableList<User> = mutableListOf()
@@ -22,11 +23,11 @@ class MockedUsersStorage : UsersStorage {
             if (query != null) {
                 ((it.firstName + it.lastName)).contains(query)
             } else true
-        }.subList(offset.toInt(), (offset + number).toInt())
+        }.limit(offset.toInt()..(offset + number).toInt())
     }
 
     override suspend fun create(email: String): User {
-        val user = User(users.last().id + 1, "User", null, email)
+        val user = User((users.lastOrNull()?.id ?: 0) + 1, "User", null, email)
         users += user
         return user
     }

@@ -9,10 +9,10 @@ import com.dove.data.users.User
 import com.dove.data.users.tokens.Token
 import com.dove.data.users.verifications.VerificationType
 import com.dove.mailer.Email
+import com.dove.mailer.Mailer
 import com.dove.server.features.users.storage.UsersStorage
 import com.dove.server.features.users.tokens.storage.TokensStorage
 import com.dove.server.features.users.verifications.storage.VerificationsStorage
-import com.dove.server.utils.emails.EmailSender
 import com.dove.server.utils.random.nextString
 import com.dove.server.utils.time.timeInMs
 import kotlin.random.Random
@@ -20,7 +20,8 @@ import kotlin.random.Random
 class TokensAPI(
     private val tokensStorage: TokensStorage,
     private val usersStorage: UsersStorage,
-    private val verificationsStorage: VerificationsStorage
+    private val verificationsStorage: VerificationsStorage,
+    private val mailer: Mailer
 ) {
     suspend fun create(
         email: String
@@ -36,7 +37,7 @@ class TokensAPI(
             timeInMs
         )
 
-        val status = EmailSender.send(
+        val status = mailer.send(
             Email(
                 "Verify your authorization",
                 "Your code for dove is $code.",

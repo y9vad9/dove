@@ -18,5 +18,5 @@ interface FilesStorage {
      * Reads [fileName] in storage.
      * @return [InputStream] with file bytes.
      */
-    suspend fun read(fileName: String): InputStream
+    suspend fun read(fileName: String): InputStream?
 }
