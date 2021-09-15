@@ -9,20 +9,21 @@ import com.dove.data.users.User
 import com.dove.data.users.tokens.Token
 import com.dove.data.users.verifications.VerificationType
 import com.dove.mailer.Email
-import com.dove.server.features.users.UsersStorage
-import com.dove.server.features.users.verifications.VerificationsStorage
+import com.dove.server.features.users.storage.UsersStorage
+import com.dove.server.features.users.tokens.storage.TokensStorage
+import com.dove.server.features.users.verifications.storage.DatabaseVerificationsStorage
 import com.dove.server.utils.emails.EmailSender
 import com.dove.server.utils.random.nextString
 import com.dove.server.utils.time.timeInMs
 import kotlin.random.Random
 
-object TokensAPI {
+class TokensAPI(private val tokensStorage: TokensStorage, private val usersStorage: UsersStorage) {
     suspend fun create(
         email: String
     ): ApiResult<Unit> {
         val code = Random.nextString(Constants.CODE_LENGTH)
-        val user = UsersStorage.read(email)
-        VerificationsStorage.create(
+        val user = usersStorage.read(email)
+        DatabaseVerificationsStorage.create(
             email,
             code,
             if (user != null)
@@ -45,26 +46,26 @@ object TokensAPI {
     }
 
     suspend fun getToken(token: String): ApiResult<Token> {
-        return TokensStorage.read(token)
+        return tokensStorage.read(token)
             ?.let(Either.Companion::success)
             ?: Either.error(InvalidTokenError())
     }
 
     suspend fun getTokens(user: User): ApiResult<List<Token>> {
-        return Either.success(TokensStorage.readAll(user.id))
+        return Either.success(tokensStorage.readAll(user.id))
     }
 
     suspend fun unauthorize(token: String): ApiResult<Unit> {
-        val auth = TokensStorage.read(token) ?: Either.error(InvalidTokenError())
-        return Either.success(TokensStorage.delete(token))
+        val auth = tokensStorage.read(token) ?: Either.error(InvalidTokenError())
+        return Either.success(tokensStorage.delete(token))
     }
 
     suspend fun unauthorize(user: User, tokenToUnauth: Long): ApiResult<Unit> {
-        val tokenToRemove = TokensStorage.read(tokenToUnauth)
+        val tokenToRemove = tokensStorage.read(tokenToUnauth)
             ?: return Either.error(InvalidTokenError("Token to remove is not found."))
 
         return if (tokenToRemove.userId == user.id)
-            Either.success(TokensStorage.delete(tokenToRemove.tokenId))
+            Either.success(tokensStorage.delete(tokenToRemove.tokenId))
         else Either.error(InvalidTokenError("Token to remove is not found."))
     }
 

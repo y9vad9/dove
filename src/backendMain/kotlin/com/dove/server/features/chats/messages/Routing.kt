@@ -3,6 +3,8 @@ package com.dove.server.features.chats.messages
 import com.dove.data.chats.messages.Message
 import com.dove.data.chats.messages.MessageContent
 import com.dove.server.features.Tags
+import com.dove.server.features.chats.members.storage.ChatMembersStorage
+import com.dove.server.features.chats.messages.storage.MessagesStorage
 import com.dove.server.features.models.ItemsLoadingInfo
 import com.dove.server.utils.openapi.get
 import com.dove.server.utils.openapi.user
@@ -11,6 +13,8 @@ import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.tag
+
+private val api: MessagesAPI = MessagesAPI(MessagesStorage.Default, ChatMembersStorage.Default)
 
 fun NormalOpenAPIRoute.chatMessages() = tag(Tags.Messages).route("/messages") {
     getMessagesRequest()
@@ -27,7 +31,7 @@ private data class GetMessagesRequest(
 
 private fun NormalOpenAPIRoute.getMessagesRequest() = userAuthorized {
     get<GetMessagesRequest, List<Message>> {
-        MessagesAPI.getMessages(user, chatId, loadingInfo.number, loadingInfo.offset)
+        api.getMessages(user, chatId, loadingInfo.number, loadingInfo.offset)
     }
 }
 
@@ -40,7 +44,7 @@ private data class SendMessagesRequest(
 
 private fun NormalOpenAPIRoute.sendMessagesRequest() = userAuthorized {
     get<SendMessagesRequest, Unit> {
-        MessagesAPI.sendMessage(user, chatId, message)
+        api.sendMessage(user, chatId, message)
     }
 }
 
@@ -53,6 +57,6 @@ private data class DeleteMessagesRequest(
 
 private fun NormalOpenAPIRoute.deleteMessagesRequest() = userAuthorized {
     get<DeleteMessagesRequest, Unit> {
-        MessagesAPI.deleteMessage(user, chatId, messageId)
+        api.deleteMessage(user, chatId, messageId)
     }
 }

@@ -8,13 +8,14 @@ import com.dove.data.monad.isSuccess
 import com.dove.data.monad.map
 import com.dove.data.users.tokens.Token
 import com.dove.data.users.tokens.TokenType
+import com.dove.server.features.users.tokens.storage.DatabaseTokensStorage
 
 object TokensHelper {
     /**
      * Checks is authorization valid.
      */
     suspend fun checkAuthorization(token: String): Either<Token, InvalidTokenError> {
-        val auth = TokensStorage.read(token) ?: return Either.error(InvalidTokenError())
+        val auth = DatabaseTokensStorage.read(token) ?: return Either.error(InvalidTokenError())
         return Either.success(auth)
     }
 

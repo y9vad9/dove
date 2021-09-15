@@ -1,6 +1,6 @@
 package com.dove.server.di
 
-import com.dove.server.local.Environment
+import com.dove.server.Environment
 import org.jetbrains.exposed.sql.Database
 
 object DatabaseDI {

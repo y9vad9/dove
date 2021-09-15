@@ -1,4 +1,4 @@
-package com.dove.server.features.users.verifications
+package com.dove.server.features.users.verifications.storage
 
 import com.dove.data.Constants
 import com.dove.data.users.verifications.Verification
@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
-object VerificationsStorage {
+object DatabaseVerificationsStorage : VerificationsStorage {
     private object Verifications : Table() {
         val EMAIL: Column<String> = varchar("email", Constants.EMAIL_MAX_LEN)
         val CODE: Column<String> = text("code")
@@ -23,7 +23,7 @@ object VerificationsStorage {
     }
 
 
-    suspend fun create(email: String, code: String, type: VerificationType, time: Long): Unit =
+    override suspend fun create(email: String, code: String, type: VerificationType, time: Long): Unit =
         newSuspendedTransaction {
             Verifications.insert {
                 it[EMAIL] = email
@@ -33,18 +33,19 @@ object VerificationsStorage {
             }
         }
 
-    suspend fun deleteAll(): Unit = newSuspendedTransaction {
+    override suspend fun deleteAll(): Unit = newSuspendedTransaction {
         Verifications.deleteAll()
     }
 
-    suspend fun read(email: String, code: String, type: VerificationType?): Verification? = newSuspendedTransaction {
-        Verifications.select {
-            (Verifications.EMAIL eq email) and (Verifications.CODE eq code) and
-                if (type != null) (Verifications.TYPE eq type) else Op.TRUE
-        }.firstOrNull()?.toVerification()
-    }
+    override suspend fun read(email: String, code: String, type: VerificationType?): Verification? =
+        newSuspendedTransaction {
+            Verifications.select {
+                (Verifications.EMAIL eq email) and (Verifications.CODE eq code) and
+                    if (type != null) (Verifications.TYPE eq type) else Op.TRUE
+            }.firstOrNull()?.toVerification()
+        }
 
-    suspend fun delete(email: String, code: String, type: VerificationType): Unit = newSuspendedTransaction {
+    override suspend fun delete(email: String, code: String, type: VerificationType): Unit = newSuspendedTransaction {
         Verifications.deleteWhere {
             (Verifications.EMAIL eq email) and (Verifications.CODE eq code) and (Verifications.TYPE eq type)
         }

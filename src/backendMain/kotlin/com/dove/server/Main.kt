@@ -2,7 +2,6 @@ package com.dove.server
 
 import com.dove.server.features.chats.chatsSocket
 import com.dove.server.features.routing
-import com.dove.server.local.Environment
 import com.dove.server.utils.authorization.setupAuthorization
 import com.dove.server.utils.openapi.setupOpenApi
 import com.dove.server.utils.serialization.setupSerialization

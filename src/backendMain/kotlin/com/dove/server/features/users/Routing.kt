@@ -3,6 +3,7 @@ package com.dove.server.features.users
 import com.dove.data.Constants
 import com.dove.data.users.User
 import com.dove.server.features.Tags
+import com.dove.server.features.users.storage.UsersStorage
 import com.dove.server.features.users.tokens.tokens
 import com.dove.server.utils.openapi.get
 import com.dove.server.utils.openapi.user
@@ -16,6 +17,8 @@ import com.papsign.ktor.openapigen.annotations.type.string.length.MinLength
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.tag
+
+private val api: UsersAPI = UsersAPI(UsersStorage.Default)
 
 fun NormalOpenAPIRoute.users() = tag(Tags.Users).route("/users") {
     getUserByIdRequest()
@@ -35,7 +38,7 @@ private data class UserByIdRequest(
 
 private fun NormalOpenAPIRoute.getUserByIdRequest() {
     get<UserByIdRequest, User> {
-        UsersAPI.getById(userId)
+        api.getById(userId)
     }
 }
 
@@ -47,7 +50,7 @@ private data class GetByEmailRequest(
 
 private fun NormalOpenAPIRoute.getUserByEmailRequest() {
     get<GetByEmailRequest, User> {
-        UsersAPI.getByEmail(email)
+        api.getByEmail(email)
     }
 }
 
@@ -63,7 +66,7 @@ private data class GetUsersRequest(
 
 private fun NormalOpenAPIRoute.getUsersRequest() {
     get<GetUsersRequest, List<User>> {
-        UsersAPI.getUsers(query, number, offset)
+        api.getUsers(query, number, offset)
     }
 }
 
@@ -79,6 +82,6 @@ private data class EditUserRequest(
 
 private fun NormalOpenAPIRoute.editUserRequest() = userAuthorized {
     get<EditUserRequest, Unit> {
-        UsersAPI.editProfile(user, newFirstName, newLastName)
+        api.editProfile(user, newFirstName, newLastName)
     }
 }

@@ -2,6 +2,7 @@ package com.dove.server.features.chats.members
 
 import com.dove.data.users.User
 import com.dove.server.features.Tags
+import com.dove.server.features.chats.members.storage.ChatMembersStorage
 import com.dove.server.features.models.ItemsLoadingInfo
 import com.dove.server.utils.openapi.get
 import com.dove.server.utils.openapi.user
@@ -10,6 +11,8 @@ import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.tag
+
+private val api: ChatMembersAPI = ChatMembersAPI(ChatMembersStorage.Default)
 
 fun NormalOpenAPIRoute.chatMembers() = tag(Tags.Members).route("/members") {
     getMembersRequest()
@@ -26,7 +29,7 @@ private data class GetMembersRequest(
 
 private fun NormalOpenAPIRoute.getMembersRequest() = userAuthorized {
     get<GetMembersRequest, List<User>> {
-        ChatMembersAPI.getMembers(user, chatId, loadingInfo.number, loadingInfo.offset)
+        api.getMembers(user, chatId, loadingInfo.number, loadingInfo.offset)
     }
 }
 
@@ -39,13 +42,13 @@ private data class MemberingRequest(
 
 private fun NormalOpenAPIRoute.addMembersRequest() = userAuthorized {
     get<MemberingRequest, Unit> {
-        ChatMembersAPI.addMember(user, chatId, userId)
+        api.addMember(user, chatId, userId)
     }
 }
 
 private fun NormalOpenAPIRoute.kickMembersRequest() = userAuthorized {
     get<MemberingRequest, Unit> {
-        ChatMembersAPI.kickMember(user, chatId, userId)
+        api.kickMember(user, chatId, userId)
     }
 }
 

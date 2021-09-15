@@ -1,4 +1,4 @@
-package com.dove.server.features.users
+package com.dove.server.features.users.storage
 
 import com.dove.data.Constants
 import com.dove.data.users.User
@@ -7,7 +7,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
-object UsersStorage {
+object DatabaseUsersStorage : UsersStorage {
     private object Users : Table() {
         val ID: Column<Long> = long("id").autoIncrement()
         val EMAIL: Column<String> = varchar("email", Constants.EMAIL_MAX_LEN)
@@ -24,7 +24,7 @@ object UsersStorage {
     /**
      * Gets user by [id].
      */
-    suspend fun read(id: Long): User? = newSuspendedTransaction {
+    override suspend fun read(id: Long): User? = newSuspendedTransaction {
         Users.select { Users.ID eq id }.firstOrNull()?.toUser()
     }
 
@@ -33,7 +33,7 @@ object UsersStorage {
      * @param ids - ids of users to get.
      * @return [List] of [User]s.
      */
-    suspend fun readAll(ids: Collection<Long>): List<User> {
+    override suspend fun readAll(ids: Collection<Long>): List<User> {
         val cached = mutableSetOf<User>()
         return ids.map { id ->
             cached.firstOrNull { it.id == id } ?: newSuspendedTransaction {
@@ -47,7 +47,7 @@ object UsersStorage {
     /**
      * Gets user by [email].
      */
-    suspend fun read(email: String) = newSuspendedTransaction {
+    override suspend fun read(email: String) = newSuspendedTransaction {
         Users.select { Users.EMAIL eq email }.firstOrNull()?.toUser()
     }
 
@@ -57,7 +57,7 @@ object UsersStorage {
      * @param number - number of items that will be returned.
      * @param offset - offset in database.
      */
-    suspend fun readAll(query: String? = null, number: Int, offset: Long): List<User> = newSuspendedTransaction {
+    override suspend fun readAll(query: String?, number: Int, offset: Long): List<User> = newSuspendedTransaction {
         Users.select {
             if (query != null)
             // TODO somehow concat
@@ -74,7 +74,7 @@ object UsersStorage {
      * Creates user with [email].
      * @return [User]
      */
-    suspend fun create(email: String): User = newSuspendedTransaction {
+    override suspend fun create(email: String): User = newSuspendedTransaction {
         Users.insert {
             it[EMAIL] = email
         }.resultedValues!!.first().toUser()
@@ -83,18 +83,18 @@ object UsersStorage {
     /**
      * Deletes user with id that equals to [id].
      */
-    suspend fun delete(id: Long): Unit = newSuspendedTransaction {
+    override suspend fun delete(id: Long): Unit = newSuspendedTransaction {
         Users.deleteWhere { Users.ID eq id }
     }
 
-    suspend fun deleteAll(): Unit = newSuspendedTransaction {
+    override suspend fun deleteAll(): Unit = newSuspendedTransaction {
         Users.deleteAll()
     }
 
     /**
      * Updates user with id [id].
      */
-    suspend fun update(id: Long, newFirstName: String?, newLastName: String?): Unit = newSuspendedTransaction {
+    override suspend fun update(id: Long, newFirstName: String?, newLastName: String?): Unit = newSuspendedTransaction {
         Users.update(
             where = { Users.ID eq id },
             body = {

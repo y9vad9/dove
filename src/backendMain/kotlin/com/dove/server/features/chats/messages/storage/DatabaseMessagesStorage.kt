@@ -1,4 +1,4 @@
-package com.dove.server.features.chats.messages
+package com.dove.server.features.chats.messages.storage
 
 import com.dove.data.Constants
 import com.dove.data.chats.messages.Message
@@ -7,8 +7,8 @@ import com.dove.data.chats.messages.MessageType
 import com.dove.data.files.FileInfo
 import com.dove.data.users.User
 import com.dove.server.di.DatabaseDI
-import com.dove.server.features.files.FilesStorage
-import com.dove.server.features.users.UsersStorage
+import com.dove.server.features.files.storage.DatabaseFilesInfoStorage
+import com.dove.server.features.users.storage.DatabaseUsersStorage
 import com.dove.server.utils.time.timeInMs
 import org.jetbrains.annotations.TestOnly
 import org.jetbrains.exposed.sql.*
@@ -16,7 +16,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
-object MessagesStorage {
+object DatabaseMessagesStorage : MessagesStorage {
     private object Messages : Table() {
         val MESSAGE_ID = long("message_id").autoIncrement()
         val MESSAGE_OWNER = long("message_owner")
@@ -39,17 +39,16 @@ object MessagesStorage {
      * @param content - text message (or text representation of media/file).
      * @param type - message type.
      */
-    suspend fun create(
+    override suspend fun create(
         messageOwner: Long,
         chatId: Long,
-        content: String,
-        type: MessageType
+        content: MessageContent<*>
     ): Unit = newSuspendedTransaction {
         Messages.insert {
             it[MESSAGE_OWNER] = messageOwner
             it[CHAT_ID] = chatId
-            it[CONTENT] = content
-            it[CONTENT_TYPE] = type
+            it[CONTENT] = content.toString()
+            it[CONTENT_TYPE] = content.type
         }
     }
 
@@ -59,13 +58,13 @@ object MessagesStorage {
      * @param offset - message getting offset.
      * @return [List] of [Message].
      */
-    suspend fun readAll(chatId: Long, number: Int, offset: Long): List<Message> = newSuspendedTransaction {
+    override suspend fun readAll(chatId: Long, number: Int, offset: Long): List<Message> = newSuspendedTransaction {
         val messages = Messages.select { Messages.CHAT_ID eq chatId }
             .limit(number, offset)
             .toList()
         val userIds = messages.map { it[Messages.MESSAGE_OWNER] }
-        val users = UsersStorage.readAll(userIds)
-        val files = FilesStorage.readAll(
+        val users = DatabaseUsersStorage.readAll(userIds)
+        val files = DatabaseFilesInfoStorage.readAll(
             messages.filter {
                 val contentType = it[Messages.CONTENT_TYPE]
                 contentType == MessageType.MEDIA || contentType == MessageType.FILE
@@ -78,19 +77,19 @@ object MessagesStorage {
     /**
      * Gets message by [messageId].
      */
-    suspend fun read(messageId: Long): Message? = newSuspendedTransaction {
+    override suspend fun read(messageId: Long): Message? = newSuspendedTransaction {
         Messages.select { Messages.MESSAGE_ID eq messageId }.firstOrNull()?.toMessage()
     }
 
     /**
      * Deletes message with id [messageId].
      */
-    suspend fun delete(messageId: Long): Unit = newSuspendedTransaction {
+    override suspend fun delete(messageId: Long): Unit = newSuspendedTransaction {
         Messages.deleteWhere { Messages.MESSAGE_ID eq messageId }
     }
 
     @TestOnly
-    suspend fun deleteAll(): Unit = newSuspendedTransaction {
+    override suspend fun deleteAll(): Unit = newSuspendedTransaction {
         Messages.deleteAll()
     }
 
@@ -119,11 +118,11 @@ object MessagesStorage {
         val message = get(Messages.CONTENT)
         val content = when (type) {
             MessageType.TEXT -> MessageContent.PlainText(message)
-            MessageType.MEDIA -> MessageContent.Media(FilesStorage.read(UUID.fromString(message))!!)
-            MessageType.FILE -> MessageContent.File(FilesStorage.read(UUID.fromString(message))!!)
+            MessageType.MEDIA -> MessageContent.Media(DatabaseFilesInfoStorage.read(UUID.fromString(message))!!)
+            MessageType.FILE -> MessageContent.File(DatabaseFilesInfoStorage.read(UUID.fromString(message))!!)
         }
         return Message(
-            get(Messages.MESSAGE_ID), UsersStorage.read(get(Messages.MESSAGE_OWNER))!!,
+            get(Messages.MESSAGE_ID), DatabaseUsersStorage.read(get(Messages.MESSAGE_OWNER))!!,
             content, get(Messages.TIME)
         )
     }

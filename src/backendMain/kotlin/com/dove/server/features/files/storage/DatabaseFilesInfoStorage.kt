@@ -1,4 +1,4 @@
-package com.dove.server.features.files
+package com.dove.server.features.files.storage
 
 import com.dove.data.Constants
 import com.dove.data.files.FileInfo
@@ -10,7 +10,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
-object FilesStorage {
+object DatabaseFilesInfoStorage : FilesInfoStorage {
     private object Files : Table() {
         val FILE_UUID = uuid("file_uuid").clientDefault { UUID.randomUUID() }
         val ORIGINAL_FILE_NAME = varchar("original_file_name", Constants.FILE_NAME_MAX_LEN)
@@ -33,7 +33,7 @@ object FilesStorage {
      * @param fileHash - MD5 hash of file.
      * @param fileOwner - file owner id.
      */
-    suspend fun create(
+    override suspend fun create(
         originalFileName: String,
         fileName: String,
         fileHash: String,
@@ -52,23 +52,23 @@ object FilesStorage {
      * @param uuid - universally unique identifier of file.
      * @return [FileInfo] or null if file does not exist.
      */
-    suspend fun read(uuid: UUID): FileInfo? = newSuspendedTransaction {
+    override suspend fun read(uuid: UUID): FileInfo? = newSuspendedTransaction {
         Files.select { Files.FILE_UUID eq uuid }.firstOrNull()?.toFileInfo()
     }
 
     /**
      * Deletes file with [uuid].
      */
-    suspend fun delete(uuid: UUID): Unit = newSuspendedTransaction {
+    override suspend fun delete(uuid: UUID): Unit = newSuspendedTransaction {
         Files.deleteWhere { Files.FILE_UUID eq uuid }
     }
 
     @TestOnly
-    suspend fun deleteAll(): Unit = newSuspendedTransaction {
+    override suspend fun deleteAll(): Unit = newSuspendedTransaction {
         Files.deleteAll()
     }
 
-    suspend fun readAll(fileIds: Collection<String>): List<FileInfo> {
+    override suspend fun readAll(fileIds: Collection<String>): List<FileInfo> {
         val cached = mutableSetOf<FileInfo>()
         return fileIds.map { uuid ->
             cached.firstOrNull { it.uuid == uuid } ?: newSuspendedTransaction {

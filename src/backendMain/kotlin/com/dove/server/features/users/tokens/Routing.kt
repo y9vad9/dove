@@ -2,6 +2,8 @@ package com.dove.server.features.users.tokens
 
 import com.dove.data.users.tokens.Token
 import com.dove.server.features.Tags
+import com.dove.server.features.users.storage.UsersStorage
+import com.dove.server.features.users.tokens.storage.TokensStorage
 import com.dove.server.features.users.verifications.tokenVerifications
 import com.dove.server.utils.openapi.delete
 import com.dove.server.utils.openapi.get
@@ -11,6 +13,8 @@ import com.papsign.ktor.openapigen.annotations.parameters.HeaderParam
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.tag
+
+private val api: TokensAPI = TokensAPI(TokensStorage.Default, UsersStorage.Default)
 
 fun NormalOpenAPIRoute.tokens() = tag(Tags.Tokens) {
     createToken()
@@ -29,7 +33,7 @@ private data class CreateTokenRequest(
 
 private fun NormalOpenAPIRoute.createToken() {
     get<CreateTokenRequest, Unit> {
-        TokensAPI.create(email)
+        api.create(email)
     }
 }
 
@@ -39,17 +43,17 @@ data class AuthorizeByTokenRequest(
 )
 
 private fun NormalOpenAPIRoute.getTokenRequest() = get<AuthorizeByTokenRequest, Token> {
-    TokensAPI.getToken(token)
+    api.getToken(token)
 }
 
 private fun NormalOpenAPIRoute.getTokensRequest() = userAuthorized {
     get<AuthorizeByTokenRequest, List<Token>> {
-        TokensAPI.getTokens(user)
+        api.getTokens(user)
     }
 }
 
 private fun NormalOpenAPIRoute.unauthorizeMe() = delete<AuthorizeByTokenRequest, Unit> {
-    TokensAPI.unauthorize(token)
+    api.unauthorize(token)
 }
 
 private data class UnauthorizeRequest(
@@ -61,7 +65,7 @@ private data class UnauthorizeRequest(
 
 private fun NormalOpenAPIRoute.unauthorize() = userAuthorized {
     delete<UnauthorizeRequest, Unit> {
-        TokensAPI.unauthorize(user, unauthTokenId)
+        api.unauthorize(user, unauthTokenId)
     }
 }
 

@@ -1,6 +1,6 @@
 package com.dove.server.utils.openapi
 
-import com.dove.server.local.Environment
+import com.dove.server.Environment
 import com.papsign.ktor.openapigen.OpenAPIGen
 import com.papsign.ktor.openapigen.openAPIGen
 import com.papsign.ktor.openapigen.schema.namer.DefaultSchemaNamer

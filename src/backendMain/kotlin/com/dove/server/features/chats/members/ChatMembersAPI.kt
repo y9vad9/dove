@@ -7,34 +7,35 @@ import com.dove.data.monad.Either
 import com.dove.data.monad.onError
 import com.dove.data.users.User
 import com.dove.server.features.chats.ChatHelper
-import com.dove.server.features.users.UsersStorage
+import com.dove.server.features.chats.members.storage.ChatMembersStorage
+import com.dove.server.features.users.storage.DatabaseUsersStorage
 
-object ChatMembersAPI {
+class ChatMembersAPI(private val storage: ChatMembersStorage) {
 
     suspend fun getMembers(user: User, chatId: Long, numberToLoad: Int, offset: Long): ApiResult<List<User>> {
-        ChatHelper.checkIsChatMember(chatId, user.id).onError {
+        ChatHelper.checkIsChatMember(storage, chatId, user.id).onError {
             return Either.error(NoSuchPermissionError("you should be chat member to get members."))
         }
 
-        return Either.success(ChatMembersStorage.readAll(chatId, numberToLoad, offset).map {
-            UsersStorage.read(it.memberId)!!
+        return Either.success(storage.readAll(chatId, numberToLoad, offset).map {
+            DatabaseUsersStorage.read(it.memberId)!!
         })
     }
 
     suspend fun addMember(user: User, chatId: Long, userId: Long): ApiResult<Unit> {
-        ChatHelper.checkIsChatOwner(chatId, user.id).onError {
+        ChatHelper.checkIsChatOwner(storage, chatId, user.id).onError {
             return Either.error(it)
         }
 
-        return Either.success(ChatMembersStorage.create(chatId, userId, MemberType.REGULAR))
+        return Either.success(storage.create(chatId, userId, MemberType.REGULAR))
     }
 
     suspend fun kickMember(user: User, chatId: Long, userId: Long): ApiResult<Unit> {
-        ChatHelper.checkIsChatOwner(chatId, user.id).onError {
+        ChatHelper.checkIsChatOwner(storage, chatId, user.id).onError {
             return Either.error(it)
         }
 
-        return Either.success(ChatMembersStorage.delete(chatId, userId))
+        return Either.success(storage.delete(chatId, userId))
     }
 
 }

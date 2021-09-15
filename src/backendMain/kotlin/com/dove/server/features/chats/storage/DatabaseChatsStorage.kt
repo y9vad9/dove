@@ -1,18 +1,18 @@
-package com.dove.server.features.chats
+package com.dove.server.features.chats.storage
 
 import com.dove.data.Constants
 import com.dove.data.chats.Chat
 import com.dove.data.chats.ChatType
 import com.dove.server.di.DatabaseDI
-import com.dove.server.features.chats.members.ChatMembersStorage
-import com.dove.server.features.users.UsersStorage
+import com.dove.server.features.chats.members.storage.DatabaseChatMembersStorage
+import com.dove.server.features.users.storage.DatabaseUsersStorage
 import com.dove.server.utils.time.timeInMs
 import org.jetbrains.annotations.TestOnly
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
-object ChatsStorage {
+object DatabaseChatsStorage : ChatsStorage {
     private object Chats : Table() {
         val CHAT_ID: Column<Long> = long("chat_id").autoIncrement()
         val CHAT_NAME: Column<String?> = varchar("chat_name", Constants.CHAT_NAME_MAX_LEN).nullable()
@@ -33,30 +33,32 @@ object ChatsStorage {
      * @param chatImage - image uuid of chat (only for [ChatType.GROUP])
      * @param chatType - type of chat.
      */
-    suspend fun create(chatName: String?, chatImage: String?, chatType: ChatType): Long = newSuspendedTransaction {
-        Chats.insert {
-            it[CHAT_NAME] = chatName
-            it[CHAT_IMAGE] = chatImage
-            it[CHAT_TYPE] = chatType
-        }[Chats.CHAT_ID]
-    }
+    override suspend fun create(chatName: String?, chatImage: String?, chatType: ChatType): Long =
+        newSuspendedTransaction {
+            Chats.insert {
+                it[CHAT_NAME] = chatName
+                it[CHAT_IMAGE] = chatImage
+                it[CHAT_TYPE] = chatType
+            }[Chats.CHAT_ID]
+        }
 
     /**
      * Updates chat with [chatId].
      * @param newChatName - new chat name (if null it won't change anything)
      * @param newChatImage - new chat image (if null it won't change anything)
      */
-    suspend fun update(chatId: Long, newChatName: String?, newChatImage: String?): Unit = newSuspendedTransaction {
-        Chats.update(
-            where = { Chats.CHAT_ID eq chatId },
-            body = {
-                if (newChatName != null)
-                    it[CHAT_NAME] = newChatName
-                if (newChatImage != null)
-                    it[CHAT_IMAGE] = newChatImage
-            }
-        )
-    }
+    override suspend fun update(chatId: Long, newChatName: String?, newChatImage: String?): Unit =
+        newSuspendedTransaction {
+            Chats.update(
+                where = { Chats.CHAT_ID eq chatId },
+                body = {
+                    if (newChatName != null)
+                        it[CHAT_NAME] = newChatName
+                    if (newChatImage != null)
+                        it[CHAT_IMAGE] = newChatImage
+                }
+            )
+        }
 
 
     /**
@@ -65,8 +67,8 @@ object ChatsStorage {
      * @param number - number of columns that will be loaded.
      * @param offset - position from which it will load.
      */
-    suspend fun readAll(userId: Long, number: Int, offset: Long): List<Chat> {
-        return ChatMembersStorage.chatIdsUserExistIn(userId, number, offset).map { id ->
+    override suspend fun readAll(userId: Long, number: Int, offset: Long): List<Chat> {
+        return DatabaseChatMembersStorage.chatIdsUserExistIn(userId, number, offset).map { id ->
             newSuspendedTransaction {
                 Chats.select { Chats.CHAT_ID eq id }.first().toChat(userId)
             }
@@ -78,14 +80,14 @@ object ChatsStorage {
      * @param chatId - chat identifier.
      * @param userId - user id (which gets chat, used for mapping).
      */
-    suspend fun read(chatId: Long, userId: Long): Chat? = newSuspendedTransaction {
+    override suspend fun read(chatId: Long, userId: Long): Chat? = newSuspendedTransaction {
         Chats.select { Chats.CHAT_ID eq chatId }.singleOrNull()?.toChat(userId)
     }
 
     /**
      * Deletes chat with [chatId].
      */
-    suspend fun delete(chatId: Long): Unit = newSuspendedTransaction {
+    override suspend fun delete(chatId: Long): Unit = newSuspendedTransaction {
         Chats.deleteWhere { Chats.CHAT_ID eq chatId }
     }
 
@@ -93,7 +95,7 @@ object ChatsStorage {
      * Deletes all chat in database.
      */
     @TestOnly
-    suspend fun deleteAll(): Unit = newSuspendedTransaction {
+    override suspend fun deleteAll(): Unit = newSuspendedTransaction {
         Chats.deleteAll()
     }
 
@@ -102,8 +104,8 @@ object ChatsStorage {
         return when (get(Chats.CHAT_TYPE)) {
             ChatType.PERSONAL -> Chat.Personal(
                 chatId,
-                UsersStorage.read(
-                    ChatMembersStorage.readAll(chatId, 2, 0)
+                DatabaseUsersStorage.read(
+                    DatabaseChatMembersStorage.readAll(chatId, 2, 0)
                         .toMutableList()
                         .apply {
                             removeIf { it.memberId == userId }

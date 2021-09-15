@@ -1,4 +1,4 @@
-package com.dove.server.local
+package com.dove.server
 
 import com.dove.mailer.LocalMailer
 import com.dove.mailer.Mailer

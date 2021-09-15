@@ -9,37 +9,39 @@ import com.dove.data.monad.Either
 import com.dove.data.monad.onError
 import com.dove.data.users.User
 import com.dove.server.features.chats.ChatHelper
+import com.dove.server.features.chats.members.storage.ChatMembersStorage
+import com.dove.server.features.chats.messages.storage.MessagesStorage
 
-object MessagesAPI {
+class MessagesAPI(private val messagesStorage: MessagesStorage, private val membersStorage: ChatMembersStorage) {
     suspend fun getMessages(
         user: User,
         chatId: Long,
         numberOfMessages: Int,
         offset: Long
     ): ApiResult<List<Message>> {
-        ChatHelper.checkIsChatMember(chatId, user.id).onError {
+        ChatHelper.checkIsChatMember(membersStorage, chatId, user.id).onError {
             return Either.error(NoSuchPermissionError("you should be chat member to get messages."))
         }
 
-        return Either.success(MessagesStorage.readAll(chatId, numberOfMessages, offset))
+        return Either.success(messagesStorage.readAll(chatId, numberOfMessages, offset))
     }
 
     suspend fun sendMessage(user: User, chatId: Long, message: MessageContent<*>): ApiResult<Unit> {
-        ChatHelper.checkIsChatMember(chatId, user.id).onError {
+        ChatHelper.checkIsChatMember(membersStorage, chatId, user.id).onError {
             return Either.error(NoSuchPermissionError("you should be chat member to get messages."))
         }
-        return Either.success(MessagesStorage.create(user.id, chatId, message.value.toString(), message.type))
+        return Either.success(messagesStorage.create(user.id, chatId, message))
     }
 
     suspend fun deleteMessage(user: User, chatId: Long, messageId: Long): ApiResult<Unit> {
-        ChatHelper.checkIsChatMember(chatId, user.id).onError {
+        ChatHelper.checkIsChatMember(membersStorage, chatId, user.id).onError {
             return Either.error(NoSuchPermissionError("you should be chat member to get messages."))
         }
 
-        val message = MessagesStorage.read(messageId) ?: return Either.error(MessageNotFoundError)
+        val message = messagesStorage.read(messageId) ?: return Either.error(MessageNotFoundError)
 
         return if (message.user.id == user.id)
-            Either.success(MessagesStorage.delete(messageId))
+            Either.success(messagesStorage.delete(messageId))
         else Either.error(NoSuchPermissionError("You can delete only your messages."))
     }
 

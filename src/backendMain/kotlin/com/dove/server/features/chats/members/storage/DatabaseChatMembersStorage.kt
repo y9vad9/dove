@@ -1,4 +1,4 @@
-package com.dove.server.features.chats.members
+package com.dove.server.features.chats.members.storage
 
 import com.dove.data.chats.Member
 import com.dove.data.chats.MemberType
@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
-object ChatMembersStorage {
+object DatabaseChatMembersStorage : ChatMembersStorage {
     private object ChatMembers : Table() {
         /**
          * Identifier of the chat where member exists.
@@ -37,9 +37,9 @@ object ChatMembersStorage {
 
     /**
      * Adds new member with [memberId] to chat with [chatId].
-     * @see com.dove.server.features.chats.ChatsStorage.Chats.CHAT_ID
+     * @see com.dove.server.features.chats.DatabaseChatsStorage.Chats.CHAT_ID
      */
-    suspend fun create(chatId: Long, memberId: Long, memberType: MemberType): Unit = newSuspendedTransaction {
+    override suspend fun create(chatId: Long, memberId: Long, memberType: MemberType): Unit = newSuspendedTransaction {
         ChatMembers.insert {
             it[CHAT_ID] = chatId
             it[MEMBER_ID] = memberId
@@ -51,7 +51,7 @@ object ChatMembersStorage {
      * @param chatId - number identifier of the chat.
      * @param memberId - number identifier of the user.
      */
-    suspend fun delete(chatId: Long, memberId: Long): Unit = newSuspendedTransaction {
+    override suspend fun delete(chatId: Long, memberId: Long): Unit = newSuspendedTransaction {
         ChatMembers.deleteWhere { (ChatMembers.CHAT_ID eq chatId) and (ChatMembers.MEMBER_ID eq memberId) }
     }
 
@@ -61,7 +61,7 @@ object ChatMembersStorage {
      * @param number - number of columns that will be loaded.
      * @param offset - position from which it will load.
      */
-    suspend fun readAll(chatId: Long, number: Int, offset: Long): List<Member> = newSuspendedTransaction {
+    override suspend fun readAll(chatId: Long, number: Int, offset: Long): List<Member> = newSuspendedTransaction {
         ChatMembers.select { ChatMembers.CHAT_ID eq chatId }
             .limit(number, offset)
             .toList()
@@ -71,13 +71,13 @@ object ChatMembersStorage {
     /**
      * Gets chat owner by [chatId].
      */
-    suspend fun readOwner(chatId: Long): Member = newSuspendedTransaction {
+    override suspend fun readOwner(chatId: Long): Member = newSuspendedTransaction {
         ChatMembers.select {
             (ChatMembers.CHAT_ID eq chatId) and (ChatMembers.MEMBER_TYPE eq MemberType.OWNER)
         }.single().toMember()
     }
 
-    suspend fun exists(chatId: Long, userId: Long) = newSuspendedTransaction {
+    override suspend fun exists(chatId: Long, userId: Long) = newSuspendedTransaction {
         ChatMembers.select { (ChatMembers.CHAT_ID eq chatId) and (ChatMembers.MEMBER_ID eq userId) }
             .firstOrNull() != null
     }
@@ -88,14 +88,15 @@ object ChatMembersStorage {
      * @param number - number of columns that will be loaded.
      * @param offset - position from which it will load.
      */
-    suspend fun chatIdsUserExistIn(memberId: Long, number: Int, offset: Long): List<Long> = newSuspendedTransaction {
-        ChatMembers.select { ChatMembers.MEMBER_ID eq memberId }
-            .limit(number, offset)
-            .toList()
-            .map { it.toMember().memberId }
-    }
+    override suspend fun chatIdsUserExistIn(memberId: Long, number: Int, offset: Long): List<Long> =
+        newSuspendedTransaction {
+            ChatMembers.select { ChatMembers.MEMBER_ID eq memberId }
+                .limit(number, offset)
+                .toList()
+                .map { it.toMember().memberId }
+        }
 
-    suspend fun deleteAll(): Unit = newSuspendedTransaction {
+    override suspend fun deleteAll(): Unit = newSuspendedTransaction {
         ChatMembers.deleteAll()
     }
 
