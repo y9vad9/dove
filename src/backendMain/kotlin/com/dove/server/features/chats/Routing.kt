@@ -3,12 +3,16 @@ package com.dove.server.features.chats
 import com.dove.data.chats.Chat
 import com.dove.data.chats.GroupInfo
 import com.dove.server.features.chats.members.chatMembers
+import com.dove.server.features.chats.members.storage.ChatMembersStorage
 import com.dove.server.features.chats.messages.chatMessages
+import com.dove.server.features.chats.storage.ChatsStorage
 import com.dove.server.features.models.ItemsLoadingInfo
 import com.dove.server.utils.openapi.*
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.route
+
+private val api: ChatsAPI = ChatsAPI(ChatsStorage.Default, ChatMembersStorage.Default)
 
 fun NormalOpenAPIRoute.chats() = route("/chats") {
     getUsersChatsRequest()
@@ -23,7 +27,7 @@ fun NormalOpenAPIRoute.chats() = route("/chats") {
 
 private fun NormalOpenAPIRoute.getUsersChatsRequest() = userAuthorized {
     get<ItemsLoadingInfo, List<Chat>> {
-        ChatsAPI.getUserChats(user, number, offset)
+        api.getUserChats(user, number, offset)
     }
 }
 
@@ -34,7 +38,7 @@ private data class CreateChatRequest(
 
 private fun NormalOpenAPIRoute.createGroupRequest() = userAuthorized {
     post<CreateChatRequest, Chat.Group, Unit> {
-        ChatsAPI.createGroup(user, name)
+        api.createGroup(user, name)
     }
 }
 
@@ -45,7 +49,7 @@ private data class CreatePersonalRequest(
 
 private fun NormalOpenAPIRoute.createPersonalRequest() = userAuthorized {
     post<CreatePersonalRequest, Chat.Personal, Unit> {
-        ChatsAPI.createPersonalChat(user, userId)
+        api.createPersonalChat(user, userId)
     }
 }
 
@@ -58,7 +62,7 @@ private data class EditGroupRequest(
 
 private fun NormalOpenAPIRoute.editGroupRequest() = userAuthorized {
     patch<EditGroupRequest, Unit, Unit> {
-        ChatsAPI.updateGroupInfo(user, groupId, info)
+        api.updateGroupInfo(user, groupId, info)
     }
 }
 
@@ -69,6 +73,6 @@ private data class DeleteGroupRequest(
 
 private fun NormalOpenAPIRoute.deleteChatRequest() = userAuthorized {
     patch<DeleteGroupRequest, Unit, Unit> {
-        ChatsAPI.deleteChat(user, groupId)
+        api.deleteChat(user, groupId)
     }
 }

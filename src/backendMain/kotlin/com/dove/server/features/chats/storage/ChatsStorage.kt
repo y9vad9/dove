@@ -5,6 +5,9 @@ import com.dove.data.chats.ChatType
 import org.jetbrains.annotations.TestOnly
 
 interface ChatsStorage {
+
+    companion object Default : ChatsStorage by DatabaseChatsStorage
+
     /**
      * Creates new chat in database.
      * @param chatName - name of chat (only for [ChatType.GROUP])
