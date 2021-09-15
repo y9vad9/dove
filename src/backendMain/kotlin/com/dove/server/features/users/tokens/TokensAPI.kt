@@ -11,19 +11,23 @@ import com.dove.data.users.verifications.VerificationType
 import com.dove.mailer.Email
 import com.dove.server.features.users.storage.UsersStorage
 import com.dove.server.features.users.tokens.storage.TokensStorage
-import com.dove.server.features.users.verifications.storage.DatabaseVerificationsStorage
+import com.dove.server.features.users.verifications.storage.VerificationsStorage
 import com.dove.server.utils.emails.EmailSender
 import com.dove.server.utils.random.nextString
 import com.dove.server.utils.time.timeInMs
 import kotlin.random.Random
 
-class TokensAPI(private val tokensStorage: TokensStorage, private val usersStorage: UsersStorage) {
+class TokensAPI(
+    private val tokensStorage: TokensStorage,
+    private val usersStorage: UsersStorage,
+    private val verificationsStorage: VerificationsStorage
+) {
     suspend fun create(
         email: String
     ): ApiResult<Unit> {
         val code = Random.nextString(Constants.CODE_LENGTH)
         val user = usersStorage.read(email)
-        DatabaseVerificationsStorage.create(
+        verificationsStorage.create(
             email,
             code,
             if (user != null)

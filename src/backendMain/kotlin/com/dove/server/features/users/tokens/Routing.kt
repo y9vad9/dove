@@ -4,6 +4,7 @@ import com.dove.data.users.tokens.Token
 import com.dove.server.features.Tags
 import com.dove.server.features.users.storage.UsersStorage
 import com.dove.server.features.users.tokens.storage.TokensStorage
+import com.dove.server.features.users.verifications.storage.VerificationsStorage
 import com.dove.server.features.users.verifications.tokenVerifications
 import com.dove.server.utils.openapi.delete
 import com.dove.server.utils.openapi.get
@@ -14,7 +15,7 @@ import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.tag
 
-private val api: TokensAPI = TokensAPI(TokensStorage.Default, UsersStorage.Default)
+private val api: TokensAPI = TokensAPI(TokensStorage.Default, UsersStorage.Default, VerificationsStorage.Default)
 
 fun NormalOpenAPIRoute.tokens() = tag(Tags.Tokens) {
     createToken()
