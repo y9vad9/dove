@@ -4,6 +4,7 @@ import com.dove.data.users.User
 import com.dove.server.features.Tags
 import com.dove.server.features.chats.members.storage.ChatMembersStorage
 import com.dove.server.features.models.ItemsLoadingInfo
+import com.dove.server.features.users.storage.UsersStorage
 import com.dove.server.utils.openapi.get
 import com.dove.server.utils.openapi.user
 import com.dove.server.utils.openapi.userAuthorized
@@ -12,7 +13,7 @@ import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.tag
 
-private val api: ChatMembersAPI = ChatMembersAPI(ChatMembersStorage.Default)
+private val api: ChatMembersAPI = ChatMembersAPI(ChatMembersStorage.Default, UsersStorage.Default)
 
 fun NormalOpenAPIRoute.chatMembers() = tag(Tags.Members).route("/members") {
     getMembersRequest()

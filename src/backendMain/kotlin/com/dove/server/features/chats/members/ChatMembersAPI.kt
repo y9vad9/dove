@@ -8,9 +8,9 @@ import com.dove.data.monad.onError
 import com.dove.data.users.User
 import com.dove.server.features.chats.ChatHelper
 import com.dove.server.features.chats.members.storage.ChatMembersStorage
-import com.dove.server.features.users.storage.DatabaseUsersStorage
+import com.dove.server.features.users.storage.UsersStorage
 
-class ChatMembersAPI(private val storage: ChatMembersStorage) {
+class ChatMembersAPI(private val storage: ChatMembersStorage, private val usersStorage: UsersStorage) {
 
     suspend fun getMembers(user: User, chatId: Long, numberToLoad: Int, offset: Long): ApiResult<List<User>> {
         ChatHelper.checkIsChatMember(storage, chatId, user.id).onError {
@@ -18,7 +18,7 @@ class ChatMembersAPI(private val storage: ChatMembersStorage) {
         }
 
         return Either.success(storage.readAll(chatId, numberToLoad, offset).map {
-            DatabaseUsersStorage.read(it.memberId)!!
+            usersStorage.read(it.memberId)!!
         })
     }
 
