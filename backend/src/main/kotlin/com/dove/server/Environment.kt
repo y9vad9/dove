@@ -14,6 +14,6 @@ object Environment {
     val databaseUser: String by lazy { System.getenv("POSTGRES_USER") }
     val databasePassword: String by lazy { System.getenv("POSTGRES_PASSWORD") }
 
-    val mailer: Mailer by lazy { if (isTest) LocalMailer() else TODO() }
+    val mailer: Mailer by lazy { if (com.dove.server.Environment.isTest) LocalMailer() else TODO() }
     val files: Path by lazy { Path(System.getenv("SERVER_UPLOAD_PATH")) }
 }

@@ -11,7 +11,7 @@ import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 
 fun main() {
-    embeddedServer(CIO, port = Environment.port) {
+    embeddedServer(CIO, port = com.dove.server.Environment.port) {
         setupOpenApi()
         setupSerialization()
         setupAuthorization()
@@ -23,6 +23,6 @@ fun main() {
         routing {
             chatsSocket()
         }
-    }
+    }.start(wait = true)
 }
 

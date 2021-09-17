@@ -1,6 +1,5 @@
 package com.dove.server.utils.openapi
 
-import com.dove.server.Environment
 import com.papsign.ktor.openapigen.OpenAPIGen
 import com.papsign.ktor.openapigen.openAPIGen
 import com.papsign.ktor.openapigen.schema.namer.DefaultSchemaNamer
@@ -24,7 +23,7 @@ fun Application.setupOpenApi() {
             }
         }
 
-        if (Environment.debug) {
+        if (com.dove.server.Environment.debug) {
             server(url = "http://localhost:8080") {
                 description = "Local API Endpoint"
             }

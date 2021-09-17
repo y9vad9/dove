@@ -14,7 +14,7 @@ import java.util.*
 
 class FilesAPI(private val filesInfoStorage: FilesInfoStorage, private val filesStorage: FilesStorage) {
     /**
-     * Uploads file to server.
+     * Uploads file to com.dove.server.
      * @return [String] representation of [java.util.UUID].
      */
     suspend fun upload(user: User, realName: String, stream: InputStream): ApiResult<String> {

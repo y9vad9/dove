@@ -1,42 +1,18 @@
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    id("com.android.application")
+    id("org.hidetake.ssh")
+    id("com.github.johnrengelman.shadow")
 }
 
+
 kotlin {
-    jvm("backend") {
-        compilations.all {
-            kotlinOptions.jvmTarget = "11"
-        }
-    }
-    android()
+    jvm()
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation(Deps.Libs.Kotlinx.Serialization)
                 implementation(Deps.Libs.Kotlinx.Coroutines)
-            }
-        }
-
-        val backendMain by getting {
-            dependencies {
-                implementation(Deps.Libs.Exposed.Core)
-                implementation(Deps.Libs.Exposed.Jdbc)
-                implementation(Deps.Libs.Exposed.Time)
-                implementation(Deps.Libs.Ktor.Server.Core)
-                implementation(Deps.Libs.Ktor.Server.Cio)
-                implementation(Deps.Libs.Ktor.Server.Openapi)
-                implementation(Deps.Libs.Ktor.Server.Serialization)
-                implementation(project(Deps.Modules.Mailer))
-                implementation(project(Deps.Modules.JsonRpc))
-                implementation(Deps.Libs.Ktor.Server.WebSockets)
-            }
-        }
-        val backendTest by getting {
-            dependencies {
-                implementation(Deps.Libs.Guava)
-                implementation(Deps.Libs.JUnit)
             }
         }
     }
@@ -46,15 +22,38 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-android {
-    compileSdk = 31
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    defaultConfig {
-        applicationId = AppInfo.Package
-        versionCode = AppInfo.VersionCode
-        versionName = AppInfo.VersionName
+//android {
+//    compileSdk = 31
+//    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+//    defaultConfig {
+//        applicationId = AppInfo.Package
+//        versionCode = AppInfo.VersionCode
+//        versionName = AppInfo.VersionName
+//
+//        minSdkVersion(21)
+//        targetSdkVersion(AppInfo.Android.TargetSdk)
+//    }
+//}
 
-        minSdkVersion(21)
-        targetSdkVersion(AppInfo.Android.TargetSdk)
-    }
-}
+//tasks.create(name = "Deploy") {
+//    group = "deploy"
+//
+//    dependsOn(tasks["shadowJar"])
+//
+//    doLast {
+//        ssh.run(delegateClosureOf<org.hidetake.groovy.ssh.core.RunHandler> {
+//            session(
+//                getRemote(),
+//                delegateClosureOf<org.hidetake.groovy.ssh.session.SessionHandler> {
+//                    put(
+//                        hashMapOf(
+//                            "from" to tasks.getByName<Jar>("shadowJar").archiveFile.get().asFile,
+//                            "into" to properties["destination"]!!,
+//                        ),
+//                    )
+//                    execute("systemctl restart dove")
+//                },
+//            )
+//        })
+//    }
+//}

@@ -1,11 +1,10 @@
 package com.dove.server.features.files.storage
 
-import com.dove.server.Environment
 import java.io.InputStream
 
 interface FilesStorage {
 
-    companion object Default : FilesStorage by DirectoryFilesStorage(Environment.files)
+    companion object Default : FilesStorage by DirectoryFilesStorage(com.dove.server.Environment.files)
 
     /**
      * Writes [inputStream] to storage.

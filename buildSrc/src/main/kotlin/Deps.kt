@@ -26,6 +26,7 @@ object Deps {
     private const val androidGradlePluginVersion = "4.2.0"
 
     object Modules {
+        const val Root = ":"
         const val Mailer = ":mailer"
         const val JsonRpc = ":jsonrpc"
     }

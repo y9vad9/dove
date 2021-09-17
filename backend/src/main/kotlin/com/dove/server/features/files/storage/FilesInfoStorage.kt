@@ -11,7 +11,7 @@ interface FilesInfoStorage {
     /**
      * Creates new file in files table.
      * @param originalFileName - client-original name of file.
-     * @param fileName - name of file that uploaded on server (different from [originalFileName]).
+     * @param fileName - name of file that uploaded on com.dove.server (different from [originalFileName]).
      * @param fileHash - MD5 hash of file.
      * @param fileOwner - file owner id.
      */
