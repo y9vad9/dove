@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    id("dependencies")
 }
 
 group = "${AppInfo.Package}.mailer"

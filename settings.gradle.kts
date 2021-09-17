@@ -26,6 +26,9 @@ dependencyResolutionManagement {
     }
 }
 
+includeBuild("buildUtils/dependencies")
+includeBuild("buildUtils/deploy")
+
 include("mailer")
 include("jsonrpc")
 include("backend")

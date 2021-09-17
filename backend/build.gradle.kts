@@ -1,7 +1,10 @@
+import org.gradle.util.GUtil.loadProperties
+
 plugins {
     kotlin("jvm")
     id("com.github.johnrengelman.shadow")
     id("org.hidetake.ssh")
+    id("deploy")
 }
 
 dependencies {
@@ -21,4 +24,34 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+val service = "dove"
+
+val propertiesFile = file("deploy.properties")
+
+deploy {
+    if (propertiesFile.exists()) {
+        val properties = loadProperties(propertiesFile)
+
+        host = properties.getProperty("host")
+        user = properties.getProperty("user")
+        password = properties.getProperty("password")
+        deployPath = properties.getProperty("deployPath")
+        knownHostsFile = properties.getProperty("knownHosts")
+
+        mainClass = "com.dove.server.MainKt"
+        serviceName = service
+    } else {
+        ignore = true
+    }
+}
+
+tasks.create("stop") {
+    group = "deploy"
+    doLast {
+        the<SshSessionExtension>().invoke {
+            execute("systemctl stop $service")
+        }
+    }
 }
