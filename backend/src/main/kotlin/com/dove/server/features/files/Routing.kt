@@ -8,6 +8,8 @@ import com.dove.server.utils.openapi.getNullable
 import com.dove.server.utils.openapi.post
 import com.dove.server.utils.openapi.user
 import com.dove.server.utils.openapi.userAuthorized
+import com.papsign.ktor.openapigen.annotations.Path
+import com.papsign.ktor.openapigen.annotations.parameters.PathParam
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
 import com.papsign.ktor.openapigen.content.type.binary.BinaryRequest
 import com.papsign.ktor.openapigen.content.type.binary.BinaryResponse
@@ -39,8 +41,9 @@ private fun NormalOpenAPIRoute.uploadFileRequest() = userAuthorized {
     }
 }
 
+@Path("/{fileUUID}")
 private data class GetFileContentRequest(
-    @QueryParam("File UUID")
+    @PathParam("File UUID")
     val fileUUID: String
 )
 

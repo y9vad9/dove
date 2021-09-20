@@ -8,6 +8,8 @@ import com.dove.server.features.chats.messages.chatMessages
 import com.dove.server.features.chats.storage.ChatsStorage
 import com.dove.server.features.models.ItemsLoadingInfo
 import com.dove.server.utils.openapi.*
+import com.papsign.ktor.openapigen.annotations.Path
+import com.papsign.ktor.openapigen.annotations.parameters.PathParam
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.route
@@ -54,8 +56,9 @@ private fun NormalOpenAPIRoute.createPersonalRequest() = userAuthorized {
     }
 }
 
+@Path("/{groupId}")
 private data class EditGroupRequest(
-    @QueryParam("Group ID")
+    @PathParam("Group ID")
     val groupId: Long,
     @QueryParam("New name")
     val name: String?,
@@ -69,8 +72,9 @@ private fun NormalOpenAPIRoute.editGroupRequest() = userAuthorized {
     }
 }
 
+@Path("/{groupId}")
 private data class DeleteGroupRequest(
-    @QueryParam("Group ID")
+    @PathParam("Group ID")
     val groupId: Long
 )
 

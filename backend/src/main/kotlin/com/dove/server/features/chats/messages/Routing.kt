@@ -9,6 +9,8 @@ import com.dove.server.features.models.ItemsLoadingInfo
 import com.dove.server.utils.openapi.get
 import com.dove.server.utils.openapi.user
 import com.dove.server.utils.openapi.userAuthorized
+import com.papsign.ktor.openapigen.annotations.Path
+import com.papsign.ktor.openapigen.annotations.parameters.PathParam
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.route
@@ -22,8 +24,9 @@ fun NormalOpenAPIRoute.chatMessages() = tag(Tags.Messages).route("/messages") {
     deleteMessagesRequest()
 }
 
+@Path("/{chatId}")
 private data class GetMessagesRequest(
-    @QueryParam("Chat identifier")
+    @PathParam("Chat identifier")
     val chatId: Long,
     @QueryParam("Loading information")
     val loadingInfo: ItemsLoadingInfo
@@ -35,8 +38,9 @@ private fun NormalOpenAPIRoute.getMessagesRequest() = userAuthorized {
     }
 }
 
+@Path("/{chatId}")
 private data class SendMessagesRequest(
-    @QueryParam("Chat identifier")
+    @PathParam("Chat identifier")
     val chatId: Long,
     @QueryParam("Loading information")
     val message: String,
@@ -50,8 +54,9 @@ private fun NormalOpenAPIRoute.sendMessagesRequest() = userAuthorized {
     }
 }
 
+@Path("/{chatId}")
 private data class DeleteMessagesRequest(
-    @QueryParam("Chat identifier")
+    @PathParam("Chat identifier")
     val chatId: Long,
     @QueryParam("Loading information")
     val messageId: Long

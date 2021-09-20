@@ -8,6 +8,8 @@ import com.dove.server.features.users.storage.UsersStorage
 import com.dove.server.utils.openapi.get
 import com.dove.server.utils.openapi.user
 import com.dove.server.utils.openapi.userAuthorized
+import com.papsign.ktor.openapigen.annotations.Path
+import com.papsign.ktor.openapigen.annotations.parameters.PathParam
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.route
@@ -21,8 +23,9 @@ fun NormalOpenAPIRoute.chatMembers() = tag(Tags.Members).route("/members") {
     kickMembersRequest()
 }
 
+@Path("/{groupId}")
 private data class GetMembersRequest(
-    @QueryParam("Chat identifier")
+    @PathParam("Chat identifier")
     val chatId: Long,
     @QueryParam("Loading info")
     val loadingInfo: ItemsLoadingInfo
@@ -34,8 +37,9 @@ private fun NormalOpenAPIRoute.getMembersRequest() = userAuthorized {
     }
 }
 
+@Path("/{chatId}")
 private data class MemberingRequest(
-    @QueryParam("Chat identifier")
+    @PathParam("Chat identifier")
     val chatId: Long,
     @QueryParam("User to add identifier")
     val userId: Long
