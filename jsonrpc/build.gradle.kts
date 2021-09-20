@@ -1,6 +1,5 @@
 plugins {
     kotlin("jvm")
-    id("dependencies")
 }
 
 version = AppInfo.VersionName

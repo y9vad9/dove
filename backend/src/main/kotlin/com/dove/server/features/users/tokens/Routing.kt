@@ -1,7 +1,7 @@
 package com.dove.server.features.users.tokens
 
 import com.dove.data.users.tokens.Token
-import com.dove.mailer.LocalMailer
+import com.dove.server.Environment
 import com.dove.server.features.Tags
 import com.dove.server.features.users.storage.UsersStorage
 import com.dove.server.features.users.tokens.storage.TokensStorage
@@ -17,7 +17,7 @@ import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.tag
 
 private val api: TokensAPI =
-    TokensAPI(TokensStorage.Default, UsersStorage.Default, VerificationsStorage.Default, LocalMailer())
+    TokensAPI(TokensStorage.Default, UsersStorage.Default, VerificationsStorage.Default, Environment.mailer)
 
 fun NormalOpenAPIRoute.tokens() = tag(Tags.Tokens) {
     createToken()

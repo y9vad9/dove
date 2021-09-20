@@ -1,11 +1,8 @@
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    id("org.hidetake.ssh")
-    id("com.github.johnrengelman.shadow")
     id("dependencies")
 }
-
 
 kotlin {
     jvm()

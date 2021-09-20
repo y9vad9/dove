@@ -1,7 +1,7 @@
 @file:Suppress("unused")
 
 object Deps {
-    private const val kotlinVersion = "1.5.30"
+    private const val kotlinVersion = "1.5.31"
     private const val coroutinesVersion = "1.5.0"
     private const val serializationVersion = "1.2.2"
     private const val nodejsExternalsVersion = "0.0.7"

@@ -1,6 +1,7 @@
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.CopySpec
+import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.jvm.tasks.Jar
 import org.gradle.kotlin.dsl.*
 import org.gradle.util.GUtil.loadProperties
@@ -46,6 +47,12 @@ class DeployPlugin : Plugin<Project> {
                     attributes["Implementation-Title"] = configuration.implementationTitle ?: configuration.mainClass
                 }
 
+                exclude("**/module-info.class")
+                exclude("**/LICENSE")
+                exclude("META-INF/NOTICE")
+                exclude("**/com.fasterxml.jackson.databind.Module")
+                exclude("META-INF/LICENSE.txt")
+
                 from(
                     project.configurations
                         .getByName("runtimeClasspath")
@@ -59,6 +66,7 @@ class DeployPlugin : Plugin<Project> {
                 manifest {
                     attributes(mapOf("Main-Class" to configuration.mainClass))
                 }
+                duplicatesStrategy = DuplicatesStrategy.INHERIT
             }
 
             target.task("deploy") {

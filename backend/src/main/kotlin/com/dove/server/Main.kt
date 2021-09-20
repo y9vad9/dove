@@ -11,7 +11,7 @@ import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 
 fun main() {
-    embeddedServer(CIO, port = com.dove.server.Environment.port) {
+    embeddedServer(CIO, port = Environment.port) {
         setupOpenApi()
         setupSerialization()
         setupAuthorization()

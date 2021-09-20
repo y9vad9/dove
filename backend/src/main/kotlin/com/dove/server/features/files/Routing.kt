@@ -10,10 +10,8 @@ import com.dove.server.utils.openapi.post
 import com.dove.server.utils.openapi.user
 import com.dove.server.utils.openapi.userAuthorized
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
+import com.papsign.ktor.openapigen.content.type.binary.BinaryRequest
 import com.papsign.ktor.openapigen.content.type.binary.BinaryResponse
-import com.papsign.ktor.openapigen.content.type.multipart.FormDataRequest
-import com.papsign.ktor.openapigen.content.type.multipart.NamedFileInputStream
-import com.papsign.ktor.openapigen.content.type.multipart.PartEncoding
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.tag
@@ -26,10 +24,10 @@ fun NormalOpenAPIRoute.files() = tag(Tags.Files).route("/files") {
     getFileContentRequest()
 }
 
-@FormDataRequest
+@BinaryRequest(["*/*"])
 private data class UploadFileRequest(
-    @PartEncoding("*/*")
-    val file: NamedFileInputStream,
+    val file: InputStream,
+    @QueryParam("name")
     val name: String
 )
 
