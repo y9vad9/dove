@@ -1,6 +1,7 @@
 package com.dove.server.features.chats
 
-import com.dove.data.api.errors.NoSuchPermissionError
+import com.dove.data.api.ApiError
+import com.dove.data.api.ApiError.Companion.permissionError
 import com.dove.data.monad.Either
 import com.dove.server.features.chats.members.storage.ChatMembersStorage
 
@@ -15,9 +16,9 @@ object ChatHelper {
         storage: ChatMembersStorage,
         chatId: Long,
         userId: Long
-    ): Either<Unit, NoSuchPermissionError> {
+    ): Either<Unit, ApiError> {
         return if (storage.readOwner(chatId).memberId != userId)
-            Either.error(NoSuchPermissionError("you should be chat owner to perform this action."))
+            Either.error(permissionError("you should be chat owner to perform this action."))
         else Either.success(Unit)
     }
 }

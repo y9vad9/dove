@@ -1,7 +1,7 @@
 package com.dove.server.features.files
 
+import com.dove.data.api.ApiError
 import com.dove.data.api.ApiResult
-import com.dove.data.api.errors.FileNotFoundError
 import com.dove.data.monad.Either
 import com.dove.data.users.User
 import com.dove.server.features.files.storage.FilesInfoStorage
@@ -27,7 +27,7 @@ class FilesAPI(private val filesInfoStorage: FilesInfoStorage, private val files
      * Reads file bytes by [fileUUID].
      */
     suspend fun getFileBytes(fileUUID: String): ApiResult<InputStream> {
-        val file = filesInfoStorage.read(UUID.fromString(fileUUID)) ?: return Either.error(FileNotFoundError)
+        val file = filesInfoStorage.read(UUID.fromString(fileUUID)) ?: return Either.error(ApiError.FileNotFoundError)
         return Either.success(withContext(Dispatchers.IO) {
             filesStorage.read(file.fileHash)!!
         })

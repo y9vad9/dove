@@ -1,7 +1,7 @@
 package com.dove.server.features.users
 
+import com.dove.data.api.ApiError.Companion.UserNotFoundError
 import com.dove.data.api.ApiResult
-import com.dove.data.api.errors.UserNotFoundError
 import com.dove.data.monad.Either
 import com.dove.data.users.User
 import com.dove.server.features.users.storage.UsersStorage

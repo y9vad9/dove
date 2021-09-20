@@ -1,7 +1,7 @@
 package com.dove.server.features.chats.members
 
+import com.dove.data.api.ApiError.Companion.permissionError
 import com.dove.data.api.ApiResult
-import com.dove.data.api.errors.NoSuchPermissionError
 import com.dove.data.chats.MemberType
 import com.dove.data.monad.Either
 import com.dove.data.monad.onError
@@ -14,7 +14,7 @@ class ChatMembersAPI(private val storage: ChatMembersStorage, private val usersS
 
     suspend fun getMembers(user: User, chatId: Long, numberToLoad: Int, offset: Long): ApiResult<List<User>> {
         ChatHelper.checkIsChatMember(storage, chatId, user.id).onError {
-            return Either.error(NoSuchPermissionError("you should be chat member to get members."))
+            return Either.error(permissionError("you should be chat member to get members."))
         }
 
         return Either.success(storage.readAll(chatId, numberToLoad, offset).map {

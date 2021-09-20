@@ -1,7 +1,7 @@
 package com.dove.server.middleware.authorization
 
+import com.dove.data.api.ApiError
 import com.dove.data.api.ApiResult
-import com.dove.data.api.errors.ApiError
 import com.dove.data.monad.onError
 import com.dove.data.monad.onSuccess
 import io.ktor.application.*

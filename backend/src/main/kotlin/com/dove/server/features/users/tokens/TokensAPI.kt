@@ -1,9 +1,9 @@
 package com.dove.server.features.users.tokens
 
 import com.dove.data.Constants
+import com.dove.data.api.ApiError
+import com.dove.data.api.ApiError.Companion.InvalidTokenError
 import com.dove.data.api.ApiResult
-import com.dove.data.api.errors.InternalApiError
-import com.dove.data.api.errors.InvalidTokenError
 import com.dove.data.monad.Either
 import com.dove.data.users.User
 import com.dove.data.users.tokens.Token
@@ -47,13 +47,13 @@ class TokensAPI(
 
         return if (status)
             ApiResult.success(Unit)
-        else ApiResult.error(InternalApiError)
+        else ApiResult.error(ApiError.InternalServerError)
     }
 
     suspend fun getToken(token: String): ApiResult<Token> {
         return tokensStorage.read(token)
             ?.let(Either.Companion::success)
-            ?: Either.error(InvalidTokenError())
+            ?: Either.error(InvalidTokenError)
     }
 
     suspend fun getTokens(user: User): ApiResult<List<Token>> {
@@ -61,17 +61,17 @@ class TokensAPI(
     }
 
     suspend fun unauthorize(token: String): ApiResult<Unit> {
-        tokensStorage.read(token) ?: Either.error(InvalidTokenError())
+        tokensStorage.read(token) ?: Either.error(InvalidTokenError)
         return Either.success(tokensStorage.delete(token))
     }
 
     suspend fun unauthorize(user: User, tokenToUnauth: Long): ApiResult<Unit> {
         val tokenToRemove = tokensStorage.read(tokenToUnauth)
-            ?: return Either.error(InvalidTokenError("Token to remove is not found."))
+            ?: return Either.error(InvalidTokenError)
 
         return if (tokenToRemove.userId == user.id)
             Either.success(tokensStorage.delete(tokenToRemove.tokenId))
-        else Either.error(InvalidTokenError("Token to remove is not found."))
+        else Either.error(InvalidTokenError)
     }
 
 }

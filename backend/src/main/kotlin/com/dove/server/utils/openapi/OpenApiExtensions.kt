@@ -1,6 +1,6 @@
 package com.dove.server.utils.openapi
 
-import com.dove.data.api.errors.ApiError
+import com.dove.data.api.ApiError
 import com.dove.data.monad.Either
 import com.dove.data.monad.onError
 import com.dove.data.monad.onSuccess

@@ -1,7 +1,7 @@
 package com.dove.server.utils.authorization
 
+import com.dove.data.api.ApiError
 import com.dove.data.api.ApiResult
-import com.dove.data.api.errors.InvalidTokenError
 import com.dove.data.monad.Either
 import com.dove.data.monad.isSuccess
 import com.dove.data.monad.map
@@ -24,7 +24,7 @@ fun Application.setupAuthorization() {
                 ?.takeIf { it.matches(Regex("Bearer .+")) }
                 ?.split(" ", limit = 2)
                 ?.getOrNull(index = 1)
-                ?: return@authorize ApiResult.error(InvalidTokenError())
+                ?: return@authorize ApiResult.error(ApiError.InvalidTokenError)
 
             val usersAPI = UsersAPI(UsersStorage.Default)
 
@@ -36,12 +36,12 @@ fun Application.setupAuthorization() {
             ).getToken(token)
                 .map {
                     if (it.isSuccess() && it.value.type != TokenType.REGULAR)
-                        Either.error(InvalidTokenError())
+                        Either.error(ApiError.InvalidTokenError)
                     else it
                 }
                 .valueOrNull()
                 ?.let { usersAPI.getById(it.userId) }
-                ?: ApiResult.error(InvalidTokenError())
+                ?: ApiResult.error((ApiError.InvalidTokenError))
         }
         catch { error ->
             call.respond(HttpStatusCode.Unauthorized, error)

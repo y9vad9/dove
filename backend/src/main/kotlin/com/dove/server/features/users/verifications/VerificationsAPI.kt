@@ -1,8 +1,8 @@
 package com.dove.server.features.users.verifications
 
 import com.dove.data.Constants
+import com.dove.data.api.ApiError.Companion.InvalidVerificationError
 import com.dove.data.api.ApiResult
-import com.dove.data.api.errors.InvalidVerificationError
 import com.dove.data.users.tokens.Token
 import com.dove.data.users.tokens.TokenType
 import com.dove.data.users.verifications.VerificationType

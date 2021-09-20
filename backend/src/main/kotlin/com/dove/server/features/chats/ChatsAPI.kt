@@ -1,7 +1,7 @@
 package com.dove.server.features.chats
 
+import com.dove.data.api.ApiError.Companion.ChatNotFoundError
 import com.dove.data.api.ApiResult
-import com.dove.data.api.errors.ChatNotFoundError
 import com.dove.data.chats.Chat
 import com.dove.data.chats.ChatType
 import com.dove.data.chats.MemberType

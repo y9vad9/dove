@@ -2,7 +2,7 @@
 
 package com.dove.server.features.users.tokens
 
-import com.dove.data.api.errors.InvalidTokenError
+import com.dove.data.api.ApiError
 import com.dove.data.monad.Either
 import com.dove.data.monad.isSuccess
 import com.dove.data.monad.map
@@ -14,18 +14,18 @@ object TokensHelper {
     /**
      * Checks is authorization valid.
      */
-    suspend fun checkAuthorization(token: String): Either<Token, InvalidTokenError> {
-        val auth = DatabaseTokensStorage.read(token) ?: return Either.error(InvalidTokenError())
+    suspend fun checkAuthorization(token: String): Either<Token, ApiError> {
+        val auth = DatabaseTokensStorage.read(token) ?: return Either.error(ApiError.InvalidTokenError)
         return Either.success(auth)
     }
 
     /**
      * Checks token validness (should exist and be [TokenType.REGULAR]).
      */
-    suspend fun checkRegularAuthorization(token: String): Either<Token, InvalidTokenError> =
+    suspend fun checkRegularAuthorization(token: String): Either<Token, ApiError> =
         checkAuthorization(token).map {
             if (it.isSuccess() && it.value.type != TokenType.REGULAR)
-                Either.error(InvalidTokenError())
+                Either.error(ApiError.InvalidTokenError)
             else it
         }
 }
