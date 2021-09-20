@@ -6,6 +6,7 @@ plugins {
 }
 
 dependencies {
+    implementation(Deps.Libs.Slf4j.Simple)
     implementation(project(Deps.Modules.Root))
     implementation(Deps.Libs.Exposed.Core)
     implementation(Deps.Libs.Exposed.Jdbc)
