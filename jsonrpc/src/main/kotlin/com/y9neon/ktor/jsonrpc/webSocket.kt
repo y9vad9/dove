@@ -13,6 +13,7 @@ import io.ktor.websocket.webSocket as webSocketDefault
 @OptIn(InternalSerializationApi::class)
 public fun Routing.webSocket(path: String, block: JsonRpcRequestsBuilder.() -> Unit) {
     val builder = JsonRpcRequestsBuilder()
+    block(builder)
     webSocketDefault(path) {
         val session = JsonRpcSession(this)
         for (frame in incoming) {

@@ -7,19 +7,17 @@ import com.dove.server.features.users.storage.UsersStorage
 import com.dove.server.features.users.tokens.storage.TokensStorage
 import com.dove.server.features.users.verifications.storage.VerificationsStorage
 import com.dove.server.features.users.verifications.tokenVerifications
-import com.dove.server.utils.openapi.delete
-import com.dove.server.utils.openapi.get
-import com.dove.server.utils.openapi.user
-import com.dove.server.utils.openapi.userAuthorized
+import com.dove.server.utils.openapi.*
 import com.papsign.ktor.openapigen.annotations.parameters.HeaderParam
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
+import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.tag
 
 private val api: TokensAPI =
     TokensAPI(TokensStorage.Default, UsersStorage.Default, VerificationsStorage.Default, Environment.mailer)
 
-fun NormalOpenAPIRoute.tokens() = tag(Tags.Tokens) {
+fun NormalOpenAPIRoute.tokens() = tag(Tags.Tokens).route("tokens") {
     createToken()
     getTokenRequest()
     getTokensRequest()
@@ -35,7 +33,7 @@ private data class CreateTokenRequest(
 )
 
 private fun NormalOpenAPIRoute.createToken() {
-    get<CreateTokenRequest, Unit> {
+    post<CreateTokenRequest, Unit, Unit> {
         api.create(email)
     }
 }
