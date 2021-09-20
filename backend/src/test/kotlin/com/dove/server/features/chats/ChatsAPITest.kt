@@ -1,7 +1,6 @@
 package com.dove.server.features.chats
 
 import com.dove.data.chats.ChatType
-import com.dove.data.chats.GroupInfo
 import com.dove.data.chats.MemberType
 import com.dove.data.monad.isSuccess
 import com.dove.server.features.chats.members.storage.ChatMembersStorage
@@ -47,7 +46,7 @@ object ChatsAPITest {
     fun updateGroupInfo(): Unit = runBlocking {
         val group = chatsStorage.create("test", null, ChatType.GROUP)
         chatMembersStorage.create(group, user.id, MemberType.OWNER)
-        assert(api.updateGroupInfo(user, group, GroupInfo("test", null)).isSuccess())
+        assert(api.updateGroupInfo(user, group, "test", null).isSuccess())
     }
 
     @Test

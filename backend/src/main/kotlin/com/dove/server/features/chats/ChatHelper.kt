@@ -5,7 +5,6 @@ import com.dove.data.monad.Either
 import com.dove.server.features.chats.members.storage.ChatMembersStorage
 
 object ChatHelper {
-
     suspend fun checkIsChatMember(storage: ChatMembersStorage, chatId: Long, userId: Long): Either<Unit, Unit> {
         return if (storage.exists(chatId, userId))
             Either.success(Unit)

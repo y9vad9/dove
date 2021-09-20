@@ -1,8 +1,11 @@
 package com.dove.data.chats.messages
 
+import kotlinx.serialization.Serializable
+
 /**
  * Message types.
  */
+@Serializable
 enum class MessageType {
     /**
      * Marks that message has simple plain text.

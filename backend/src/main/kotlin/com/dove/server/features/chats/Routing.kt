@@ -1,7 +1,6 @@
 package com.dove.server.features.chats
 
 import com.dove.data.chats.Chat
-import com.dove.data.chats.GroupInfo
 import com.dove.server.features.chats.members.chatMembers
 import com.dove.server.features.chats.members.storage.ChatMembersStorage
 import com.dove.server.features.chats.messages.chatMessages
@@ -56,13 +55,15 @@ private fun NormalOpenAPIRoute.createPersonalRequest() = userAuthorized {
 private data class EditGroupRequest(
     @QueryParam("Group ID")
     val groupId: Long,
-    @QueryParam("New Group information")
-    val info: GroupInfo
+    @QueryParam("New name")
+    val name: String?,
+    @QueryParam("New chat image")
+    val image: String?
 )
 
 private fun NormalOpenAPIRoute.editGroupRequest() = userAuthorized {
     patch<EditGroupRequest, Unit, Unit> {
-        api.updateGroupInfo(user, groupId, info)
+        api.updateGroupInfo(user, groupId, name, image)
     }
 }
 

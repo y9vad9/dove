@@ -5,7 +5,6 @@ import kotlinx.serialization.SerialName
 
 sealed interface MessageContent<T> {
     val value: T
-    val type: MessageType
 
     /**
      * Simple plain text message.
@@ -13,8 +12,6 @@ sealed interface MessageContent<T> {
      */
     @SerialName("PlainText")
     class PlainText(override val value: String) : MessageContent<String> {
-        override val type: MessageType = MessageType.TEXT
-
         override fun toString(): String = value
     }
 
@@ -24,8 +21,6 @@ sealed interface MessageContent<T> {
      */
     @SerialName("Media")
     class Media(override val value: FileInfo) : MessageContent<FileInfo> {
-        override val type: MessageType = MessageType.MEDIA
-
         override fun toString(): String = value.uuid
     }
 
@@ -35,8 +30,6 @@ sealed interface MessageContent<T> {
      */
     @SerialName("PlainText")
     class File(override val value: FileInfo) : MessageContent<FileInfo> {
-        override val type: MessageType = MessageType.FILE
-
         override fun toString(): String = value.uuid
     }
 

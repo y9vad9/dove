@@ -18,7 +18,7 @@ object Environment {
     val mailer: Mailer by lazy {
         SMTPMailer(
             SMTPCredentials(
-                System.getenv("EMAIL_ADDRESS"),
+                System.getenv("SMTP_ADDRESS"),
                 System.getenv("SMTP_PORT").toInt(),
                 System.getenv("EMAIL_SENDER"),
                 System.getenv("EMAIL_PASSWORD")

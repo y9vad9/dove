@@ -4,7 +4,6 @@ import com.dove.data.api.ApiResult
 import com.dove.data.api.errors.ChatNotFoundError
 import com.dove.data.chats.Chat
 import com.dove.data.chats.ChatType
-import com.dove.data.chats.GroupInfo
 import com.dove.data.chats.MemberType
 import com.dove.data.monad.Either
 import com.dove.data.monad.isSuccess
@@ -34,7 +33,7 @@ class ChatsAPI(private val chatsStorage: ChatsStorage, private val chatMembersSt
         return Either.success(chatsStorage.read(chatId, user.id) as Chat.Personal)
     }
 
-    suspend fun updateGroupInfo(user: User, chatId: Long, groupInfo: GroupInfo): ApiResult<Unit> {
+    suspend fun updateGroupInfo(user: User, chatId: Long, name: String?, image: String?): ApiResult<Unit> {
         val group = chatsStorage.read(chatId, user.id)
             ?.takeIf { it.type == ChatType.GROUP }
             ?: return Either.error(ChatNotFoundError)
@@ -43,7 +42,7 @@ class ChatsAPI(private val chatsStorage: ChatsStorage, private val chatMembersSt
             return Either.error(it)
         }
 
-        return Either.success(chatsStorage.update(chatId, groupInfo.name, groupInfo.image))
+        return Either.success(chatsStorage.update(chatId, name, image))
     }
 
     suspend fun deleteChat(user: User, chatId: Long): ApiResult<Unit> {
