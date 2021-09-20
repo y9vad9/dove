@@ -28,7 +28,7 @@ fun Application.setupOpenApi() {
                 description = "Local API Endpoint"
             }
         }
-        server(url = "https://dove.kotlingang.fun/api") {
+        server(url = "https://dove.kotlingang.fun") {
             description = "Production API Endpoint"
         }
         replaceModule(DefaultSchemaNamer, object : SchemaNamer {
