@@ -1,7 +1,7 @@
 package com.dove.server.features.chats.messages
 
 import com.dove.data.chats.messages.Message
-import com.dove.data.chats.messages.MessageContent
+import com.dove.data.chats.messages.MessageType
 import com.dove.server.features.Tags
 import com.dove.server.features.chats.members.storage.ChatMembersStorage
 import com.dove.server.features.chats.messages.storage.MessagesStorage
@@ -39,12 +39,14 @@ private data class SendMessagesRequest(
     @QueryParam("Chat identifier")
     val chatId: Long,
     @QueryParam("Loading information")
-    val message: MessageContent<*>
+    val message: String,
+    @QueryParam("Message type")
+    val type: MessageType
 )
 
 private fun NormalOpenAPIRoute.sendMessagesRequest() = userAuthorized {
     get<SendMessagesRequest, Unit> {
-        api.sendMessage(user, chatId, message)
+        api.sendMessage(user, chatId, message, type)
     }
 }
 

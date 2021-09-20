@@ -17,7 +17,7 @@ interface MessagesStorage {
     suspend fun create(
         messageOwner: Long,
         chatId: Long,
-        message: MessageContent<*>
+        message: MessageContent
     )
 
     /**

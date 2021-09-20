@@ -5,6 +5,7 @@ import com.dove.server.features.routing
 import com.dove.server.utils.authorization.setupAuthorization
 import com.dove.server.utils.openapi.setupOpenApi
 import com.dove.server.utils.serialization.setupSerialization
+import com.dove.server.utils.sockets.setupSockets
 import com.papsign.ktor.openapigen.route.apiRouting
 import io.ktor.routing.*
 import io.ktor.server.cio.*
@@ -15,6 +16,7 @@ fun main() {
         setupOpenApi()
         setupSerialization()
         setupAuthorization()
+        setupSockets()
 
         apiRouting {
             routing()

@@ -36,19 +36,23 @@ object DatabaseMessagesStorage : MessagesStorage {
      * Creates new message in chat with [chatId].
      * @param messageOwner - id of user that sent message.
      * @param chatId - unique chat identifier.
-     * @param content - text message (or text representation of media/file).
+     * @param message - text message (or text representation of media/file).
      * @param type - message type.
      */
     override suspend fun create(
         messageOwner: Long,
         chatId: Long,
-        content: MessageContent<*>
+        message: MessageContent
     ): Unit = newSuspendedTransaction {
         Messages.insert {
             it[MESSAGE_OWNER] = messageOwner
             it[CHAT_ID] = chatId
-            it[CONTENT] = content.toString()
-            it[CONTENT_TYPE] = content.type
+            it[CONTENT] = message.toString()
+            it[CONTENT_TYPE] = when (message) {
+                is MessageContent.PlainText -> MessageType.TEXT
+                is MessageContent.Media -> MessageType.MEDIA
+                is MessageContent.File -> MessageType.FILE
+            }
         }
     }
 
@@ -116,7 +120,7 @@ object DatabaseMessagesStorage : MessagesStorage {
     private suspend fun ResultRow.toMessage(): Message {
         val type = get(Messages.CONTENT_TYPE)
         val message = get(Messages.CONTENT)
-        val content = when (type) {
+        val content: MessageContent = when (type) {
             MessageType.TEXT -> MessageContent.PlainText(message)
             MessageType.MEDIA -> MessageContent.Media(DatabaseFilesInfoStorage.read(UUID.fromString(message))!!)
             MessageType.FILE -> MessageContent.File(DatabaseFilesInfoStorage.read(UUID.fromString(message))!!)

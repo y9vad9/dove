@@ -5,6 +5,7 @@ import com.dove.data.api.errors.MessageNotFoundError
 import com.dove.data.api.errors.NoSuchPermissionError
 import com.dove.data.chats.messages.Message
 import com.dove.data.chats.messages.MessageContent
+import com.dove.data.chats.messages.MessageType
 import com.dove.data.monad.Either
 import com.dove.data.monad.onError
 import com.dove.data.users.User
@@ -26,11 +27,11 @@ class MessagesAPI(private val messagesStorage: MessagesStorage, private val memb
         return Either.success(messagesStorage.readAll(chatId, numberOfMessages, offset))
     }
 
-    suspend fun sendMessage(user: User, chatId: Long, message: MessageContent<*>): ApiResult<Unit> {
+    suspend fun sendMessage(user: User, chatId: Long, message: String, type: MessageType): ApiResult<Unit> {
         ChatHelper.checkIsChatMember(membersStorage, chatId, user.id).onError {
             return Either.error(NoSuchPermissionError("you should be chat member to get messages."))
         }
-        return Either.success(messagesStorage.create(user.id, chatId, message))
+        return Either.success(messagesStorage.create(user.id, chatId, MessageContent(message, type)))
     }
 
     suspend fun deleteMessage(user: User, chatId: Long, messageId: Long): ApiResult<Unit> {

@@ -4,7 +4,6 @@ import com.dove.data.monad.valueOrNull
 import com.dove.server.features.Tags
 import com.dove.server.features.files.storage.FilesInfoStorage
 import com.dove.server.features.files.storage.FilesStorage
-import com.dove.server.features.users.tokens.AuthorizeByTokenRequest
 import com.dove.server.utils.openapi.getNullable
 import com.dove.server.utils.openapi.post
 import com.dove.server.utils.openapi.user
@@ -26,14 +25,17 @@ fun NormalOpenAPIRoute.files() = tag(Tags.Files).route("/files") {
 
 @BinaryRequest(["*/*"])
 private data class UploadFileRequest(
-    val file: InputStream,
-    @QueryParam("name")
+    val stream: InputStream
+)
+
+private data class UploadFileParameters(
+    @QueryParam("name of file")
     val name: String
 )
 
 private fun NormalOpenAPIRoute.uploadFileRequest() = userAuthorized {
-    post<UploadFileRequest, String, AuthorizeByTokenRequest> {
-        api.upload(user, name, file)
+    post<UploadFileParameters, String, UploadFileRequest> {
+        api.upload(user, name, it.stream)
     }
 }
 

@@ -9,6 +9,6 @@ data class Message(
     val messageId: Long,
     val user: User,
     @Contextual
-    val content: MessageContent<@Contextual Any>,
+    val content: MessageContent,
     val time: Long
 )

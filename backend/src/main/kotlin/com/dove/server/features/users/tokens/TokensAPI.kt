@@ -61,7 +61,7 @@ class TokensAPI(
     }
 
     suspend fun unauthorize(token: String): ApiResult<Unit> {
-        val auth = tokensStorage.read(token) ?: Either.error(InvalidTokenError())
+        tokensStorage.read(token) ?: Either.error(InvalidTokenError())
         return Either.success(tokensStorage.delete(token))
     }
 

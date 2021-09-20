@@ -1,6 +1,7 @@
 package com.dove.server.features.chats
 
 import com.dove.data.chats.Chat
+import com.dove.server.features.Tags
 import com.dove.server.features.chats.members.chatMembers
 import com.dove.server.features.chats.members.storage.ChatMembersStorage
 import com.dove.server.features.chats.messages.chatMessages
@@ -10,10 +11,11 @@ import com.dove.server.utils.openapi.*
 import com.papsign.ktor.openapigen.annotations.parameters.QueryParam
 import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.route
+import com.papsign.ktor.openapigen.route.tag
 
 private val api: ChatsAPI = ChatsAPI(ChatsStorage.Default, ChatMembersStorage.Default)
 
-fun NormalOpenAPIRoute.chats() = route("/chats") {
+fun NormalOpenAPIRoute.chats() = tag(Tags.Chats).route("/chats") {
     getUsersChatsRequest()
     createGroupRequest()
     createPersonalRequest()

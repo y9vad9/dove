@@ -10,7 +10,7 @@ import kotlin.random.Random
 class MockedMessagesStorage : MessagesStorage {
     private val messages: MutableMap<Long, List<Message>> = mutableMapOf()
 
-    override suspend fun create(messageOwner: Long, chatId: Long, message: MessageContent<*>) {
+    override suspend fun create(messageOwner: Long, chatId: Long, message: MessageContent) {
         val chatMessages = messages[chatId] ?: listOf()
         messages[chatId] = chatMessages + Message(
             Random.nextLong(),

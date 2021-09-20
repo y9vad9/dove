@@ -3,6 +3,7 @@ package com.dove.server.features.chats.messages
 import com.dove.data.chats.ChatType
 import com.dove.data.chats.MemberType
 import com.dove.data.chats.messages.MessageContent
+import com.dove.data.chats.messages.MessageType
 import com.dove.data.monad.isSuccess
 import com.dove.data.monad.valueOrThrow
 import com.dove.server.features.chats.members.storage.ChatMembersStorage
@@ -46,7 +47,7 @@ object ChatMessagesAPITest {
     fun sendMessage(): Unit = runBlocking {
         val chatId = chatsStorage.create("test", "", ChatType.GROUP)
         chatMembersStorage.create(chatId, user.id, MemberType.REGULAR)
-        assert(api.sendMessage(user, chatId, MessageContent.PlainText("test")).isSuccess())
+        assert(api.sendMessage(user, chatId, "test", MessageType.TEXT).isSuccess())
     }
 
     @Test

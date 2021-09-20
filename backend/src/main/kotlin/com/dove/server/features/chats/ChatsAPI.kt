@@ -34,8 +34,8 @@ class ChatsAPI(private val chatsStorage: ChatsStorage, private val chatMembersSt
     }
 
     suspend fun updateGroupInfo(user: User, chatId: Long, name: String?, image: String?): ApiResult<Unit> {
-        val group = chatsStorage.read(chatId, user.id)
-            ?.takeIf { it.type == ChatType.GROUP }
+        chatsStorage.read(chatId, user.id)
+            ?.takeIf { it is Chat.Group }
             ?: return Either.error(ChatNotFoundError)
 
         ChatHelper.checkIsChatOwner(chatMembersStorage, chatId, user.id).onError {
