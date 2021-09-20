@@ -17,12 +17,14 @@ import com.papsign.ktor.openapigen.route.tag
 private val api: TokensAPI =
     TokensAPI(TokensStorage.Default, UsersStorage.Default, VerificationsStorage.Default, Environment.mailer)
 
-fun NormalOpenAPIRoute.tokens() = tag(Tags.Tokens).route("tokens") {
-    createToken()
-    getTokenRequest()
-    getTokensRequest()
-    unauthorizeMe()
-    unauthorize()
+fun NormalOpenAPIRoute.tokens() = route("tokens") {
+    tag(Tags.Tokens) {
+        createToken()
+        getTokenRequest()
+        getTokensRequest()
+        unauthorizeMe()
+        unauthorize()
+    }
 
     tokenVerifications()
 }
@@ -58,8 +60,6 @@ private fun NormalOpenAPIRoute.unauthorizeMe() = delete<AuthorizeByTokenRequest,
 }
 
 private data class UnauthorizeRequest(
-    @HeaderParam("Authorization token")
-    val token: String,
     @QueryParam("Token to unauthorize.")
     val unauthTokenId: Long
 )

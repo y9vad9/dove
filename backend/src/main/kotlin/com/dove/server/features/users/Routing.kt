@@ -4,7 +4,6 @@ import com.dove.data.Constants
 import com.dove.data.users.User
 import com.dove.server.features.Tags
 import com.dove.server.features.users.storage.UsersStorage
-import com.dove.server.features.users.tokens.tokens
 import com.dove.server.utils.openapi.get
 import com.dove.server.utils.openapi.user
 import com.dove.server.utils.openapi.userAuthorized
@@ -25,8 +24,6 @@ fun NormalOpenAPIRoute.users() = tag(Tags.Users).route("/users") {
     getUserByEmailRequest()
     getUsersRequest()
     editUserRequest()
-
-    tokens()
 }
 
 
@@ -64,7 +61,7 @@ private data class GetUsersRequest(
     val offset: Long
 )
 
-private fun NormalOpenAPIRoute.getUsersRequest() {
+private fun NormalOpenAPIRoute.getUsersRequest() = route("all") {
     get<GetUsersRequest, List<User>> {
         api.getUsers(query, number, offset)
     }
