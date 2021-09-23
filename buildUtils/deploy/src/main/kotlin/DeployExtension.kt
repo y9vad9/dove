@@ -1,5 +1,5 @@
 open class DeployExtension {
-    var ignore = false
+    var ignore = true
 
     // Required
     var host: String? = null

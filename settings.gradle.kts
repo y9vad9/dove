@@ -28,7 +28,30 @@ dependencyResolutionManagement {
 includeBuild("buildUtils/dependencies")
 includeBuild("buildUtils/deploy")
 
-include("mailer")
-include("jsonrpc")
-include("backend")
+/* backend */
+// server
+include(":backend:server:routing")
+include(":backend:server:api")
+include(":backend:server:main")
+include(":backend:server:models")
+include(":backend:server:event-dispatcher")
+// sockets
+include(":backend:server:sockets:routing")
+// storage
+include(":backend:storage:core")
+include(":backend:storage:database")
+include(":backend:storage:mocked")
+include(":backend:storage:files")
+// extensions
+include(":backend:extensions:openapi")
+include(":backend:extensions:random")
+// middlewares
+include(":backend:middlewares:authorization")
+// com.dove.server.features
+include(":backend:features:mailer")
+include(":backend:features:jsonrpc")
+include(":backend:features:hashing")
+include(":backend:features:time")
+// api
+include(":backend:apis")
 //include("android")

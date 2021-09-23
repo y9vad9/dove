@@ -22,13 +22,48 @@ object Deps {
     private const val lifecycleVersion = "2.2.0"
     private const val glideVersion = "4.12.0"
     private const val androidAppCompatVersion = "1.1.0"
+    private const val androidComposeVersion = "1.0.1"
 
     private const val androidGradlePluginVersion = "4.2.0"
 
     object Modules {
         const val Root = ":"
-        const val Mailer = ":mailer"
-        const val JsonRpc = ":jsonrpc"
+
+        object Backend {
+            object Features {
+                const val Time = ":backend:features:time"
+                const val Mailer = ":backend:features:mailer"
+                const val JsonRpc = ":backend:features:jsonrpc"
+                const val Hashing = ":backend:features:hashing"
+            }
+
+            object Storage {
+                const val Core = ":backend:storage:core"
+                const val Database = ":backend:storage:database"
+                const val Mocked = ":backend:storage:mocked"
+                const val Files = ":backend:storage:files"
+            }
+
+            object Server {
+                const val Routing = ":backend:server:routing"
+                const val Api = ":backend:server:api"
+                const val Models = ":backend:server:models"
+                const val EventDispatcher = ":backend:server:event-dispatcher"
+
+                object Sockets {
+                    const val Routing = ":backend:server:sockets:routing"
+                }
+            }
+
+            object Extensions {
+                const val OpenApi = ":backend:extensions:openapi"
+                const val Random = ":backend:extensions:random"
+            }
+
+            object Middlewares {
+                const val Authorization = ":backend:middlewares:authorization"
+            }
+        }
     }
 
     object Libs {
@@ -96,6 +131,17 @@ object Deps {
                 "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
             const val LifecycleKtx =
                 "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
+
+            object Compose {
+                const val UI = "androidx.compose.ui:ui:$androidComposeVersion"
+                const val UITooling = "androidx.compose.ui:ui-tooling:$androidComposeVersion"
+                const val Foundation = "androidx.compose.foundation:foundation:$androidComposeVersion"
+                const val Material = "androidx.compose.material:material:$androidComposeVersion"
+                const val Icons = "androidx.compose.material:material-icons-core:$androidComposeVersion"
+                const val ExtendedIcons = "androidx.compose.material:material-icons-extended:$androidComposeVersion"
+                const val JUnitTests = "androidx.compose.ui:ui-test-junit4:$androidComposeVersion"
+            }
+
         }
 
         object Bumtech {

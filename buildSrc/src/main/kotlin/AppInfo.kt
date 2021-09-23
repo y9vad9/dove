@@ -5,5 +5,6 @@ object AppInfo {
 
     object Android {
         const val TargetSdk = 31
+        const val MinSdk = 21
     }
 }
