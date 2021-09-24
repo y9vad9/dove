@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm")
+    id(kJvm)
 }
 
 group = "${AppInfo.Package}.mailer"
