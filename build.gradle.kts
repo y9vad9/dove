@@ -1,6 +1,6 @@
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
+    id(Deps.Plugins.Kotlin.Multiplatform)
+    id(Deps.Plugins.Serialization.Id)
 }
 
 kotlin {

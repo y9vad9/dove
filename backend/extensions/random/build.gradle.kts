@@ -1,3 +1,3 @@
 plugins {
-    id(kJvm)
+    id(Deps.Plugins.Kotlin.Jvm)
 }

@@ -1,7 +1,7 @@
 import org.gradle.util.GUtil.loadProperties
 
 plugins {
-    id(kJvm)
+    id(Deps.Plugins.Kotlin.Jvm)
     id("deploy")
 }
 
