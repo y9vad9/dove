@@ -1,0 +1,5 @@
+const val kAndroidApp: String = "k-android-app"
+const val kAndroidLib: String = "k-android-library"
+const val kJs: String = "k-js"
+const val kJvm: String = "k-jvm"
+const val kMpp: String = "k-mpp"
