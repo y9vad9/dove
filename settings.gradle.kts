@@ -26,6 +26,10 @@ dependencyResolutionManagement {
 }
 
 includeBuild("buildUtils/dependencies")
+includeBuild("buildUtils/configurations/android")
+includeBuild("buildUtils/configurations/jvm")
+includeBuild("buildUtils/configurations/js")
+includeBuild("buildUtils/configurations/multiplatform")
 includeBuild("buildUtils/deploy")
 
 /* backend */
@@ -54,4 +58,3 @@ include(":backend:features:hashing")
 include(":backend:features:time")
 // api
 include(":backend:apis")
-//include("android")
