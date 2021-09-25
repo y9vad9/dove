@@ -17,8 +17,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation(Deps.Libs.Androidx.Lifecycle)
-                implementation(Deps.Libs.Androidx.LifecycleKtx)
+                implementation(Deps.Libs.Androidx.ViewModel)
             }
         }
     }
@@ -26,6 +25,7 @@ kotlin {
 
 android {
     compileSdk = AppInfo.Android.TargetSdk
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
 
     defaultConfig {
         minSdk = AppInfo.Android.MinSdk

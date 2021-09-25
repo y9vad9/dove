@@ -2,12 +2,12 @@
 
 object Deps {
     private const val kotlinVersion = "1.5.31"
-    private const val coroutinesVersion = "1.5.0"
-    private const val serializationVersion = "1.2.2"
+    private const val coroutinesVersion = "1.5.2"
+    private const val serializationVersion = "1.3.0"
     private const val nodejsExternalsVersion = "0.0.7"
-    private const val ktorVersion = "1.6.0"
+    private const val ktorVersion = "1.6.3"
     private const val ktorOpenapiVersion = "0.2-beta.20"
-    private const val exposedVersion = "0.32.1"
+    private const val exposedVersion = "0.35.1"
     private const val datetimeVersion = "0.2.1"
 
     private const val postgresqlVersion = "42.2.23"
@@ -16,12 +16,12 @@ object Deps {
     private const val sshVersion = "2.10.1"
 
     private const val materialVersion = "1.5.0-alpha03"
-    private const val recyclerViewVersion = "1.1.0"
+    private const val recyclerViewVersion = "1.2.0"
     private const val swipeRefreshLayoutVersion = "1.1.0"
     private const val constraintLayoutVersion = "2.0.0"
-    private const val lifecycleVersion = "2.2.0"
+    private const val lifecycleVersion = "2.4.0-beta01"
     private const val glideVersion = "4.12.0"
-    private const val androidAppCompatVersion = "1.1.0"
+    private const val androidAppCompatVersion = "1.3.1"
     private const val androidComposeVersion = "1.1.0-alpha04"
 
     private const val androidGradlePluginVersion = "4.2.2"
@@ -167,9 +167,7 @@ object Deps {
                 "androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshLayoutVersion"
             const val ConstraintLayout =
                 "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
-            const val Lifecycle =
-                "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
-            const val LifecycleKtx =
+            const val ViewModel =
                 "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
 
             object Compose {

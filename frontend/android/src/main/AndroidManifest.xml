@@ -5,14 +5,14 @@
     <application
             android:name=".DoveApplication"
             android:allowBackup="true"
-            android:fullBackupContent="@xml/backup_descriptor"
+            android:fullBackupContent="true"
             android:icon="@mipmap/ic_launcher"
             android:label="Dove"
             android:supportsRtl="true"
             android:theme="@style/Theme.Dove">
         <activity
-                android:name=".AppActivity"
                 android:exported="true"
+                android:name=".AppActivity"
                 android:label="Dove"
                 android:theme="@style/Theme.Dove.NoActionBar">
             <intent-filter>
