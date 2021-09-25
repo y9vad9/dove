@@ -6,7 +6,7 @@ dependencies {
     implementation(project(Deps.Modules.Root))
     implementation(project(Deps.Modules.Frontend.Common))
     implementation(Deps.Libs.Kotlinx.Coroutines)
-    implementation(project(Deps.Modules.Frontend.Localization))
+    implementation(project(Deps.Modules.Frontend.Features.Localization))
     implementation(Deps.Libs.Androidx.Compose.UI)
     implementation(Deps.Libs.Androidx.Compose.UITooling)
     implementation(Deps.Libs.Androidx.Compose.Activity)

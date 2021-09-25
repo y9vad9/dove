@@ -1,4 +1,4 @@
-package com.dove.frontend.common.viewmodel
+package com.dove.frontend.features.viewmodel
 
 import kotlinx.coroutines.CoroutineScope
 

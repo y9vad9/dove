@@ -2,7 +2,7 @@ package com.dove.frontend.common.viewmodel.integrated
 
 import com.dove.data.api.ApiError
 import com.dove.frontend.common.viewmodel.AuthorizationViewModel
-import com.dove.frontend.common.viewmodel.ViewModel
+import com.dove.frontend.features.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 

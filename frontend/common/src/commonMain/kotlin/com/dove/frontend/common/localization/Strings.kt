@@ -1,5 +1,9 @@
-package com.dove.frontend.localization
+package com.dove.frontend.common.localization
 
+import com.dove.frontend.features.localization.CurrentLocaleProvider
+import com.dove.frontend.features.localization.Locale
+import com.dove.frontend.features.localization.Localized
+import com.dove.frontend.features.localization.localized
 import kotlin.properties.ReadOnlyProperty
 
 /**

@@ -62,5 +62,6 @@ include(":backend:apis")
 /* frontend */
 include(":frontend:android")
 include(":frontend:web")
-include(":frontend:localization")
+include(":frontend:features:viewmodel")
+include(":frontend:features:localization")
 include(":frontend:common")

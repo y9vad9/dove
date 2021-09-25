@@ -2,7 +2,7 @@ package com.dove.android
 
 import android.app.Application
 import com.dove.android.locale.ContextualCurrentLocaleProvider
-import com.dove.frontend.localization.CurrentLocaleProvider
+import com.dove.frontend.features.localization.CurrentLocaleProvider
 import kotlin.properties.Delegates
 
 class DoveApplication : Application() {

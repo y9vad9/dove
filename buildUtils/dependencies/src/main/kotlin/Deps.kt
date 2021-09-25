@@ -32,8 +32,12 @@ object Deps {
         const val Root = ":"
 
         object Frontend {
-            const val Localization = ":frontend:localization"
             const val Common = ":frontend:common"
+
+            object Features {
+                const val ViewModel = ":frontend:features:viewmodel"
+                const val Localization = ":frontend:features:localization"
+            }
         }
 
         object Backend {
