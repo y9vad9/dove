@@ -1,10 +1,13 @@
 plugins {
     id(Deps.Plugins.Kotlin.Multiplatform)
     id(Deps.Plugins.Serialization.Id)
+    id(Deps.Plugins.Configuration.Kotlin.Android.App) apply false
 }
 
 kotlin {
     jvm()
+    js()
+
     sourceSets {
         val commonMain by getting {
             dependencies {

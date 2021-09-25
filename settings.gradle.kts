@@ -1,9 +1,9 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal()
         mavenCentral()
         google()
         maven("https://jitpack.io")
+        gradlePluginPortal()
     }
     plugins {
         id("com.android.application") version "4.2.2"
@@ -51,10 +51,16 @@ include(":backend:extensions:openapi")
 include(":backend:extensions:random")
 // middlewares
 include(":backend:middlewares:authorization")
-// com.dove.server.features
+// features
 include(":backend:features:mailer")
 include(":backend:features:jsonrpc")
 include(":backend:features:hashing")
 include(":backend:features:time")
 // api
 include(":backend:apis")
+
+/* frontend */
+include(":frontend:android")
+include(":frontend:web")
+include(":frontend:localization")
+include(":frontend:common")

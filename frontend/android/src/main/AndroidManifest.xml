@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.dove.android">
+
+    <application
+            android:name=".DoveApplication"
+            android:allowBackup="true"
+            android:fullBackupContent="@xml/backup_descriptor"
+            android:icon="@mipmap/ic_launcher"
+            android:label="Dove"
+            android:supportsRtl="true"
+            android:theme="@style/Theme.Dove">
+        <activity
+                android:name=".AppActivity"
+                android:exported="true"
+                android:label="Dove"
+                android:theme="@style/Theme.Dove.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

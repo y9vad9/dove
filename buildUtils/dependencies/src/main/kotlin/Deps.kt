@@ -15,19 +15,26 @@ object Deps {
     private const val logbackVersion = "0.9.26"
     private const val sshVersion = "2.10.1"
 
-    private const val materialVersion = "1.2.1"
+    private const val materialVersion = "1.5.0-alpha03"
     private const val recyclerViewVersion = "1.1.0"
     private const val swipeRefreshLayoutVersion = "1.1.0"
     private const val constraintLayoutVersion = "2.0.0"
     private const val lifecycleVersion = "2.2.0"
     private const val glideVersion = "4.12.0"
     private const val androidAppCompatVersion = "1.1.0"
-    private const val androidComposeVersion = "1.0.1"
+    private const val androidComposeVersion = "1.1.0-alpha04"
 
-    private const val androidGradlePluginVersion = "4.2.0"
+    private const val androidGradlePluginVersion = "4.2.2"
+
+    private const val kvisionVersion = "5.1.1"
 
     object Modules {
         const val Root = ":"
+
+        object Frontend {
+            const val Localization = ":frontend:localization"
+            const val Common = ":frontend:common"
+        }
 
         object Backend {
             object Features {
@@ -67,6 +74,35 @@ object Deps {
     }
 
     object Libs {
+        object KVision {
+            const val Core = "io.kvision:kvision:$kvisionVersion"
+
+            object Bootstrap {
+                const val Core = "io.kvision:kvision-bootstrap:$kvisionVersion"
+                const val Css = "io.kvision:kvision-bootstrap-css:$kvisionVersion"
+                const val DateTime = "io.kvision:kvision-bootstrap-datetime:$kvisionVersion"
+                const val Select = "io.kvision:kvision-bootstrap-select:$kvisionVersion"
+                const val Spinner = "io.kvision:kvision-bootstrap-spinner:$kvisionVersion"
+                const val Upload = "io.kvision:kvision-bootstrap-upload:$kvisionVersion"
+                const val Dialog = "io.kvision:kvision-bootstrap-dialog:$kvisionVersion"
+                const val Typeahead = "io.kvision:kvision-bootstrap-typeahead:$kvisionVersion"
+            }
+
+            const val FontAwesome = "io.kvision:kvision-fontawesome:$kvisionVersion"
+            const val i18n = "io.kvision:kvision-i18n:$kvisionVersion"
+            const val RichText = "io.kvision:kvision-richtext:$kvisionVersion"
+            const val Handlebars = "io.kvision:kvision-handlebars:$kvisionVersion"
+            const val DataContainer = "io.kvision:kvision-datacontainer:$kvisionVersion"
+            const val Chart = "io.kvision:kvision-chart:$kvisionVersion"
+            const val Tabulator = "io.kvision:kvision-tabulator:$kvisionVersion"
+            const val Pace = "io.kvision:kvision-pace:$kvisionVersion"
+            const val Toast = "io.kvision:kvision-toast:$kvisionVersion"
+            const val React = "io.kvision:kvision-react:$kvisionVersion"
+            const val Navigo = "io.kvision:kvision-routing-navigo:$kvisionVersion"
+            const val State = "io.kvision:kvision-state:$kvisionVersion"
+            const val Rest = "io.kvision:kvision-rest:$kvisionVersion"
+        }
+
         object Apache {
             const val CommonMail = "org.apache.commons:commons-email:1.5"
         }
@@ -130,7 +166,7 @@ object Deps {
             const val Lifecycle =
                 "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
             const val LifecycleKtx =
-                "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
+                "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
 
             object Compose {
                 const val UI = "androidx.compose.ui:ui:$androidComposeVersion"
@@ -140,6 +176,7 @@ object Deps {
                 const val Icons = "androidx.compose.material:material-icons-core:$androidComposeVersion"
                 const val ExtendedIcons = "androidx.compose.material:material-icons-extended:$androidComposeVersion"
                 const val JUnitTests = "androidx.compose.ui:ui-test-junit4:$androidComposeVersion"
+                const val Activity = "androidx.activity:activity-compose:1.4.0-alpha02"
             }
 
         }
@@ -190,7 +227,7 @@ object Deps {
         object Android {
             const val Application = "com.android.application"
             const val Library = "com.android.library"
-            const val Classpath = "android.tools.build:gradle:$androidGradlePluginVersion"
+            const val Classpath = "com.android.tools.build:gradle:$androidGradlePluginVersion"
         }
 
         object Serialization {
