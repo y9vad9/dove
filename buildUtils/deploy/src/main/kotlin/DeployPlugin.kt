@@ -40,7 +40,7 @@ class DeployPlugin : Plugin<Project> {
             target.extensions.create<SshSessionExtension>("sshSession", target, webServer)
 
             val shadowJar = tasks.named<ShadowJar>("shadowJar") {
-                archiveBaseName.set("shadow")
+                archiveFileName.set("app.jar")
                 mergeServiceFiles()
                 manifest {
                     attributes(mapOf("Main-Class" to configuration.mainClass))
