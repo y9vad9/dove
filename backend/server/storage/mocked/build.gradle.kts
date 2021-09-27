@@ -3,5 +3,6 @@ plugins {
 }
 
 dependencies {
+    implementation(project(Deps.Modules.Backend.Server.Storage.Core))
     implementation(project(Deps.Modules.Root))
 }

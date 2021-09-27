@@ -21,4 +21,5 @@ gradlePlugin {
 dependencies {
     implementation(Deps.Plugins.Dependencies.Classpath)
     implementation(Deps.Plugins.Ssh.Classpath)
+    implementation(Deps.Plugins.Shadow.Classpath)
 }

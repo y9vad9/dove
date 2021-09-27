@@ -3,6 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation(project(Deps.Modules.Backend.Storage.Core))
+    implementation(project(Deps.Modules.Backend.Server.Storage.Core))
     implementation(Deps.Libs.Kotlinx.Coroutines)
 }

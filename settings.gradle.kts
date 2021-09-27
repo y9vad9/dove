@@ -16,7 +16,7 @@ pluginManagement {
 rootProject.name = "dove"
 
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
     repositories {
         google()
         mavenCentral()
@@ -40,12 +40,12 @@ include(":backend:server:main")
 include(":backend:server:models")
 include(":backend:server:event-dispatcher")
 // sockets
-include(":backend:server:sockets:routing")
+include(":backend:server:socket")
 // storage
-include(":backend:storage:core")
-include(":backend:storage:database")
-include(":backend:storage:mocked")
-include(":backend:storage:files")
+include(":backend:server:storage:core")
+include(":backend:server:storage:database")
+include(":backend:server:storage:mocked")
+include(":backend:server:storage:files")
 // extensions
 include(":backend:extensions:openapi")
 include(":backend:extensions:random")

@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.CopySpec
@@ -14,6 +15,7 @@ class DeployPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.apply(plugin = Deps.Plugins.Ssh.Id)
         target.apply(plugin = Deps.Plugins.Application.Id)
+        target.apply(plugin = Deps.Plugins.Shadow.Id)
 
         val configuration = target.extensions.create<DeployExtension>(name = "deploy")
 
@@ -37,48 +39,24 @@ class DeployPlugin : Plugin<Project> {
 
             target.extensions.create<SshSessionExtension>("sshSession", target, webServer)
 
-            val fatJar = target.task("fatJar", type = Jar::class) {
-                dependsOn("build")
-
-                group = "build"
-                archiveFileName.set("app.jar")
-
-                manifest {
-                    attributes["Implementation-Title"] = configuration.implementationTitle ?: configuration.mainClass
-                }
-
-                exclude("**/module-info.class")
-                exclude("**/LICENSE")
-                exclude("META-INF/NOTICE")
-                exclude("**/com.fasterxml.jackson.databind.Module")
-                exclude("META-INF/LICENSE.txt")
-
-                from(
-                    project.configurations
-                        .getByName("runtimeClasspath")
-                        .map { if (it.isDirectory) it else target.zipTree(it) }
-                )
-
-                with(project.tasks.getByName("jar") as CopySpec)
-            }
-
-            target.tasks.withType<Jar> {
+            val shadowJar = tasks.named<ShadowJar>("shadowJar") {
+                archiveBaseName.set("shadow")
+                mergeServiceFiles()
                 manifest {
                     attributes(mapOf("Main-Class" to configuration.mainClass))
                 }
-                duplicatesStrategy = DuplicatesStrategy.INHERIT
             }
 
             target.task("deploy") {
                 group = "deploy"
 
-                dependsOn(fatJar)
+                dependsOn(shadowJar)
 
                 doLast {
                     target.the<SshSessionExtension>().invoke {
                         put(
                             hashMapOf(
-                                "from" to fatJar.archiveFile.get().asFile,
+                                "from" to shadowJar.get().archiveFile.get().asFile,
                                 "into" to configuration.deployPath
                             )
                         )

@@ -18,9 +18,9 @@ dependencies {
     implementation(project(Deps.Modules.Backend.Server.Api))
     implementation(project(Deps.Modules.Backend.Features.Mailer))
     implementation(project(Deps.Modules.Backend.Server.Sockets.Routing))
-    implementation(project(Deps.Modules.Backend.Storage.Core))
-    implementation(project(Deps.Modules.Backend.Storage.Database))
-    implementation(project(Deps.Modules.Backend.Storage.Files))
+    implementation(project(Deps.Modules.Backend.Server.Storage.Core))
+    implementation(project(Deps.Modules.Backend.Server.Storage.Database))
+    implementation(project(Deps.Modules.Backend.Server.Storage.Files))
     implementation(project(Deps.Modules.Backend.Middlewares.Authorization))
     implementation(project(Deps.Modules.Backend.Extensions.OpenApi))
 }
@@ -35,6 +35,7 @@ val propertiesFile = rootProject.file("deploy.properties")
 
 deploy {
     if (propertiesFile.exists()) {
+        ignore = false
         val properties = loadProperties(propertiesFile)
 
         host = properties.getProperty("host")
@@ -43,11 +44,15 @@ deploy {
         deployPath = properties.getProperty("deployPath")
         knownHostsFile = properties.getProperty("knownHosts")
 
-        mainClass = "com.dove.server.MainKt"
+        mainClass = "com.dove.backend.server.main.MainKt"
         serviceName = service
     } else {
         ignore = true
     }
+}
+
+application {
+    mainClass.set("com.dove.backend.server.main.MainKt")
 }
 
 tasks.create("stop") {

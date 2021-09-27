@@ -27,6 +27,7 @@ object Deps {
     private const val androidGradlePluginVersion = "4.2.2"
 
     private const val kvisionVersion = "5.1.1"
+    private const val shadowVer = "7.0.0"
 
     object Modules {
         const val Root = ":"
@@ -48,21 +49,23 @@ object Deps {
                 const val Hashing = ":backend:features:hashing"
             }
 
-            object Storage {
-                const val Core = ":backend:storage:core"
-                const val Database = ":backend:storage:database"
-                const val Mocked = ":backend:storage:mocked"
-                const val Files = ":backend:storage:files"
-            }
 
             object Server {
+
+                object Storage {
+                    const val Core = ":backend:server:storage:core"
+                    const val Database = ":backend:server:storage:database"
+                    const val Mocked = ":backend:server:storage:mocked"
+                    const val Files = ":backend:server:storage:files"
+                }
+
                 const val Routing = ":backend:server:routing"
                 const val Api = ":backend:server:api"
                 const val Models = ":backend:server:models"
                 const val EventDispatcher = ":backend:server:event-dispatcher"
 
                 object Sockets {
-                    const val Routing = ":backend:server:sockets:routing"
+                    const val Routing = ":backend:server:socket"
                 }
             }
 
@@ -240,6 +243,11 @@ object Deps {
         object Ssh {
             const val Id = "org.hidetake.ssh"
             const val Classpath = "org.hidetake:gradle-ssh-plugin:$sshVersion"
+        }
+
+        object Shadow {
+            const val Classpath = "gradle.plugin.com.github.jengelman.gradle.plugins:shadow:$shadowVer"
+            const val Id = "com.github.johnrengelman.shadow"
         }
 
         object Publish {
