@@ -21,7 +21,7 @@ object Deps {
     private const val constraintLayoutVersion = "2.0.0"
     private const val lifecycleVersion = "2.4.0-beta01"
     private const val glideVersion = "4.12.0"
-    private const val androidAppCompatVersion = "1.3.1"
+    private const val androidAppCompatVersion = "1.4.0-alpha"
     private const val androidComposeVersion = "1.1.0-alpha04"
 
     private const val androidGradlePluginVersion = "4.2.2"
