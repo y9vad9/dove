@@ -14,6 +14,7 @@ import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.tag
 import com.y9neon.middleware.authorization.Authorization
+import com.y9neon.openapi.authorized
 import com.y9neon.openapi.delete
 import com.y9neon.openapi.get
 import com.y9neon.openapi.post
@@ -21,7 +22,9 @@ import com.y9neon.openapi.post
 fun NormalOpenAPIRoute.chatMessages(api: MessagesAPI, authFeature: Authorization.Feature<User>) =
     tag(Tags.Messages).route("/messages") {
         fun userAuthorized(block: UsersAuthorizedScope<NormalOpenAPIRoute>.() -> Unit) {
-            block(UsersAuthorizedScope(this, authFeature))
+            authorized(authFeature) {
+                block(UsersAuthorizedScope(this, authFeature))
+            }
         }
 
         @Path("/{chatId}")

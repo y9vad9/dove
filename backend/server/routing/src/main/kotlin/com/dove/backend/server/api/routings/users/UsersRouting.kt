@@ -18,6 +18,7 @@ import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.tag
 import com.y9neon.middleware.authorization.Authorization
+import com.y9neon.openapi.authorized
 import com.y9neon.openapi.get
 import com.y9neon.openapi.patch
 
@@ -26,10 +27,12 @@ fun NormalOpenAPIRoute.users(
     tokensAPI: TokensAPI,
     verificationsAPI: VerificationsAPI,
     feature: Authorization.Feature<User>
-) =
+) {
     tag(Tags.Users).route("/users") {
         fun userAuthorized(block: UsersAuthorizedScope<NormalOpenAPIRoute>.() -> Unit) {
-            block(UsersAuthorizedScope(this, feature))
+            authorized(feature) {
+                block(UsersAuthorizedScope(this, feature))
+            }
         }
 
         @Path("/{userId}")
@@ -94,7 +97,8 @@ fun NormalOpenAPIRoute.users(
         getUserByEmailRequest()
         getUsersRequest()
         editUserRequest()
-
-        tokens(tokensAPI, feature)
-        tokenVerifications(verificationsAPI)
     }
+
+    tokens(tokensAPI, feature)
+    tokenVerifications(verificationsAPI)
+}

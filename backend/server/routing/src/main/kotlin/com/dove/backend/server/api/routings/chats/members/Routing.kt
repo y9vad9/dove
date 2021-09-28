@@ -12,6 +12,7 @@ import com.papsign.ktor.openapigen.route.path.normal.NormalOpenAPIRoute
 import com.papsign.ktor.openapigen.route.route
 import com.papsign.ktor.openapigen.route.tag
 import com.y9neon.middleware.authorization.Authorization
+import com.y9neon.openapi.authorized
 import com.y9neon.openapi.get
 
 fun NormalOpenAPIRoute.chatMembers(
@@ -19,7 +20,9 @@ fun NormalOpenAPIRoute.chatMembers(
     authFeature: Authorization.Feature<User>
 ) = tag(Tags.Members).route("/members") {
     fun userAuthorized(block: UsersAuthorizedScope<NormalOpenAPIRoute>.() -> Unit) {
-        block(UsersAuthorizedScope(this, authFeature))
+        authorized(authFeature) {
+            block(UsersAuthorizedScope(this, authFeature))
+        }
     }
 
     @Path("/{groupId}")
